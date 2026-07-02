@@ -1,4 +1,4 @@
-import { type FormEvent, useState, useEffect } from 'react';
+import { type FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { AnimatedInput } from './AnimatedInput';
@@ -49,12 +49,6 @@ export function AnimatedForm({ mode: controlledMode, onToggleMode }: AnimatedFor
   const registerForm = useForm<RegisterFields>();
 
   const [selectedInst, setSelectedInst] = useState('');
-
-  useEffect(() => {
-    if (isLogin && institutions && institutions.length > 0 && !selectedInst) {
-      setSelectedInst(institutions[0].code);
-    }
-  }, [isLogin, institutions, selectedInst]);
 
   const onLoginSubmit = (data: LoginFields) => {
     loginMutation.mutate(
@@ -147,7 +141,7 @@ export function AnimatedForm({ mode: controlledMode, onToggleMode }: AnimatedFor
         <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-3">
           <div className="flex flex-col gap-1.5">
             <label htmlFor="login-institution" className="text-sm font-medium text-text">
-              Institución Educativa
+              Institución Educativa (opcional)
             </label>
             {instLoading ? (
               <div className="h-10 rounded-md border bg-background px-3 flex items-center text-sm text-text-secondary">
@@ -164,6 +158,7 @@ export function AnimatedForm({ mode: controlledMode, onToggleMode }: AnimatedFor
                 onChange={(e) => setSelectedInst(e.target.value)}
                 className="shadow-input flex h-10 w-full rounded-md border bg-background px-3 py-2 text-sm text-text transition-shadow focus-visible:ring-[2px] focus-visible:ring-primary focus-visible:outline-none"
               >
+                <option value="">Selecciona tu institución...</option>
                 {institutions?.map((inst) => (
                   <option key={inst.id} value={inst.code}>
                     {inst.name} ({inst.code})
