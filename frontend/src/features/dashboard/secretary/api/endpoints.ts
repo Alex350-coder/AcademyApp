@@ -6,6 +6,7 @@ export const secretaryEndpoints = {
   pendingTasks: `/api/v1/enrollments/pending-tasks`,
   sections: `/api/v1/sections`,
   attendanceBySection: (sectionId: string, date: string) =>
-    `/api/v1/attendance/section/${sectionId}?date=${date}`,
+    `/api/v1/attendance/section/${sectionId}?from=${date}&to=${date}`,
+  enrollmentsBySection: (sectionId: string) => `/api/v1/enrollments/section/${sectionId}`,
   enrollmentById: (id: string) => `/api/v1/enrollments/${id}`,
 };

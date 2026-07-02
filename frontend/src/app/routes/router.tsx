@@ -18,6 +18,12 @@ import SecretaryDashboardPage from '@/features/dashboard/secretary/pages/Secreta
 import EnrollmentWizardPage from '@/features/dashboard/secretary/pages/EnrollmentWizardPage';
 import AttendanceRegistryPage from '@/features/dashboard/secretary/pages/AttendanceRegistryPage';
 
+import { TeacherLayout } from '@/features/dashboard/teacher/components/TeacherLayout';
+import TeacherDashboardPage from '@/features/dashboard/teacher/pages/TeacherDashboardPage';
+import MySectionsPage from '@/features/dashboard/teacher/pages/MySectionsPage';
+import TeacherAttendanceRegistryPage from '@/features/dashboard/teacher/pages/AttendanceRegistryPage';
+import GradesPage from '@/features/dashboard/teacher/pages/GradesPage';
+
 import { StudentLayout } from '@/features/dashboard/student/components/StudentLayout';
 import StudentDashboardPage from '@/features/dashboard/student/pages/StudentDashboardPage';
 import MyCoursesPage from '@/features/dashboard/student/pages/MyCoursesPage';
@@ -95,10 +101,15 @@ export const router = createBrowserRouter([
         path: 'teacher',
         element: <RoleGuard allowedRoles={['TEACHER']} />,
         children: [
-          { index: true, element: <div>Teacher Dashboard</div> },
-          { path: 'courses', element: <div>My Courses</div> },
-          { path: 'grades', element: <div>Grade Management</div> },
-          { path: 'attendance', element: <div>Attendance</div> },
+          {
+            element: <TeacherLayout />,
+            children: [
+              { index: true, element: <TeacherDashboardPage /> },
+              { path: 'courses', element: <MySectionsPage /> },
+              { path: 'grades', element: <GradesPage /> },
+              { path: 'attendance', element: <TeacherAttendanceRegistryPage /> },
+            ],
+          },
         ],
       },
       {

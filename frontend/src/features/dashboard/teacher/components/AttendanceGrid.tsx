@@ -16,12 +16,12 @@ const statusOptions: { value: AttendanceStatus; label: string; color: 'success' 
   { value: 'JUSTIFIED', label: 'J', color: 'info' },
 ];
 
-interface BulkAttendanceGridProps {
+interface AttendanceGridProps {
   sectionId: string;
   date: string;
 }
 
-export function BulkAttendanceGrid({ sectionId, date }: BulkAttendanceGridProps) {
+export function AttendanceGrid({ sectionId, date }: AttendanceGridProps) {
   const enrollmentsQuery = useEnrollmentsBySection(sectionId);
   const attendanceQuery = useAttendanceBySection(sectionId, date);
   const bulkMutation = useBulkAttendance();
