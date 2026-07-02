@@ -52,7 +52,7 @@ class RegisterUserUseCaseTest {
         @DisplayName("should save user and publish event when data is valid")
         void should_registerUser_when_validData() {
             var request = new RegisterUserUseCase.Request(
-                "user@example.com", "Password1", "Jane", "Doe", "STUDENT");
+                "user@example.com", "Password1", "Jane", "Doe", "STUDENT", null);
             var role = new Role(UUID.randomUUID(), "STUDENT", "Student role", Set.of());
 
             when(userRepository.existsByEmail(any())).thenReturn(false);
@@ -72,7 +72,7 @@ class RegisterUserUseCaseTest {
         @DisplayName("should throw DuplicateEmailException when email already exists")
         void should_throwDuplicateEmail_when_emailExists() {
             var request = new RegisterUserUseCase.Request(
-                "existing@example.com", "Password1", "Jane", "Doe", null);
+                "existing@example.com", "Password1", "Jane", "Doe", null, null);
 
             when(userRepository.existsByEmail(any())).thenReturn(true);
 
@@ -88,7 +88,7 @@ class RegisterUserUseCaseTest {
         @DisplayName("should throw ValidationException when password is too short")
         void should_throwValidation_when_weakPassword() {
             var request = new RegisterUserUseCase.Request(
-                "user@example.com", "Short1", "Jane", "Doe", null);
+                "user@example.com", "Short1", "Jane", "Doe", null, null);
 
             when(userRepository.existsByEmail(any())).thenReturn(false);
 
@@ -103,7 +103,7 @@ class RegisterUserUseCaseTest {
         @DisplayName("should publish UserRegisteredEvent on success")
         void should_publishEvent_when_registrationSucceeds() {
             var request = new RegisterUserUseCase.Request(
-                "event@test.com", "Password1", "Event", "Test", null);
+                "event@test.com", "Password1", "Event", "Test", null, null);
 
             when(userRepository.existsByEmail(any())).thenReturn(false);
             when(passwordHasher.hash(any())).thenReturn("hashed");

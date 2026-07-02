@@ -97,6 +97,7 @@ class UserTest {
                 user.getLastName(),
                 user.getPhone(),
                 user.getStatus(),
+                user.getInstitutionId(),
                 user.getRoles(),
                 user.getLastLoginAt(),
                 user.getCreatedAt(),
