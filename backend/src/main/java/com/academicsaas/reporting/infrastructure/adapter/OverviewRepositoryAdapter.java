@@ -65,7 +65,9 @@ public class OverviewRepositoryAdapter implements OverviewRepository {
     @Override
     public BigDecimal calculateOverallAverage() {
         var grades = gradeRepository.findAll();
-        if (grades.isEmpty()) return BigDecimal.ZERO;
+        if (grades.isEmpty()) {
+            return BigDecimal.ZERO;
+        }
 
         var total = BigDecimal.ZERO;
         for (var grade : grades) {
@@ -85,7 +87,9 @@ public class OverviewRepositoryAdapter implements OverviewRepository {
     @Override
     public BigDecimal calculateOverallAttendanceRate() {
         var allAttendance = attendanceRepository.findAll();
-        if (allAttendance.isEmpty()) return BigDecimal.ZERO;
+        if (allAttendance.isEmpty()) {
+            return BigDecimal.ZERO;
+        }
 
         var present = allAttendance.stream()
             .filter(a -> "PRESENT".equals(a.getStatus()) || "LATE".equals(a.getStatus()))

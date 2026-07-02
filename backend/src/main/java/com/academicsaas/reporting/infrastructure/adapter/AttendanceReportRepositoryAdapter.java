@@ -39,7 +39,9 @@ public class AttendanceReportRepositoryAdapter implements AttendanceReportReposi
             .map(e -> e.getId())
             .toList();
 
-        if (enrollmentIds.isEmpty()) return List.of();
+        if (enrollmentIds.isEmpty()) {
+            return List.of();
+        }
 
         var allAttendance = attendanceRepository.findByEnrollmentIdIn(enrollmentIds);
 

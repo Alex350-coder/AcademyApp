@@ -2,7 +2,6 @@ package com.academicsaas.academic.presentation.controller;
 
 import com.academicsaas.academic.domain.model.CourseSection;
 import com.academicsaas.academic.domain.repository.CourseRepository;
-import com.academicsaas.academic.domain.repository.CourseSectionRepository;
 import com.academicsaas.academic.infrastructure.adapter.CourseSectionRepositoryAdapter;
 import com.academicsaas.academic.presentation.dto.CreateSectionRequest;
 import com.academicsaas.academic.presentation.dto.SectionDto;

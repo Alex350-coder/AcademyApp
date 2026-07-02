@@ -48,8 +48,12 @@ public class Grade {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Grade grade)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Grade grade)) {
+            return false;
+        }
         return id.equals(grade.id);
     }
 

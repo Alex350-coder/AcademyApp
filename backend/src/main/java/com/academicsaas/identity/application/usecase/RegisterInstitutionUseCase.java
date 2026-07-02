@@ -5,7 +5,6 @@ import com.academicsaas.identity.application.port.PasswordHasher;
 import com.academicsaas.identity.domain.event.UserRegisteredEvent;
 import com.academicsaas.identity.domain.exception.DuplicateEmailException;
 import com.academicsaas.identity.domain.model.Institution;
-import com.academicsaas.identity.domain.model.Role;
 import com.academicsaas.identity.domain.model.User;
 import com.academicsaas.identity.domain.model.valueobject.Email;
 import com.academicsaas.identity.domain.model.valueobject.InstitutionId;

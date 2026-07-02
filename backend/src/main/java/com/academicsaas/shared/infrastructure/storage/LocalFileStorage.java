@@ -30,7 +30,9 @@ public class LocalFileStorage implements FileStorage {
         try {
             var extension = "";
             var lastDot = command.fileName().lastIndexOf('.');
-            if (lastDot > 0) extension = command.fileName().substring(lastDot);
+            if (lastDot > 0) {
+                extension = command.fileName().substring(lastDot);
+            }
 
             var fileId = UUID.randomUUID().toString() + extension;
             var targetPath = storagePath.resolve(fileId);

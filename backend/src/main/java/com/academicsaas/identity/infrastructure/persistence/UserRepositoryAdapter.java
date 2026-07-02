@@ -4,7 +4,6 @@ import com.academicsaas.identity.domain.model.User;
 import com.academicsaas.identity.domain.model.valueobject.Email;
 import com.academicsaas.identity.domain.model.valueobject.UserId;
 import com.academicsaas.identity.domain.repository.UserRepository;
-import com.academicsaas.identity.infrastructure.persistence.entity.UserJpaEntity;
 import com.academicsaas.identity.infrastructure.persistence.mapper.UserMapper;
 import com.academicsaas.identity.infrastructure.persistence.repository.SpringDataUserRepository;
 import java.util.List;

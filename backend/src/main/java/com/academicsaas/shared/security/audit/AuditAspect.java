@@ -42,10 +42,14 @@ public class AuditAspect {
     }
 
     private String maskArguments(Object[] args) {
-        if (args == null) return "[]";
+        if (args == null) {
+            return "[]";
+        }
         var sb = new StringBuilder("[");
         for (int i = 0; i < args.length; i++) {
-            if (i > 0) sb.append(", ");
+            if (i > 0) {
+                sb.append(", ");
+            }
             var arg = args[i];
             if (arg == null) {
                 sb.append("null");

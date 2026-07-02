@@ -42,8 +42,12 @@ public class Student {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Student student)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Student student)) {
+            return false;
+        }
         return id.equals(student.id);
     }
     @Override

@@ -2,7 +2,6 @@ package com.academicsaas.academic.presentation.controller;
 
 import com.academicsaas.academic.application.usecase.EnrollStudentUseCase;
 import com.academicsaas.academic.domain.model.Enrollment;
-import com.academicsaas.academic.domain.model.valueobject.EnrollmentStatus;
 import com.academicsaas.academic.infrastructure.adapter.EnrollmentRepositoryAdapter;
 import com.academicsaas.academic.presentation.dto.BulkEnrollmentRequest;
 import com.academicsaas.academic.presentation.dto.CreateEnrollmentRequest;

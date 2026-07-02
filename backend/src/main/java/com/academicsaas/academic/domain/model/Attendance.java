@@ -48,8 +48,12 @@ public class Attendance {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Attendance that)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Attendance that)) {
+            return false;
+        }
         return id.equals(that.id);
     }
 

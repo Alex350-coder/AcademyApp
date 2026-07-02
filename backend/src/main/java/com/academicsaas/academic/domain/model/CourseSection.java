@@ -61,8 +61,12 @@ public class CourseSection {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof CourseSection that)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof CourseSection that)) {
+            return false;
+        }
         return id.equals(that.id);
     }
 

@@ -5,7 +5,6 @@ import com.academicsaas.academic.infrastructure.repository.SpringDataAcademicPer
 import com.academicsaas.academic.presentation.dto.PeriodDto;
 import com.academicsaas.shared.exception.NotFoundException;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.http.HttpStatus;

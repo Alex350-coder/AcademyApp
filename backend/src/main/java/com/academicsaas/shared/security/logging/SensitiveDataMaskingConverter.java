@@ -21,7 +21,9 @@ public class SensitiveDataMaskingConverter extends MessageConverter {
     @Override
     public String convert(ILoggingEvent event) {
         var message = event.getFormattedMessage();
-        if (message == null) return null;
+        if (message == null) {
+            return null;
+        }
 
         message = PASSWORD_PATTERN.matcher(message).replaceAll("$1=***MASKED***");
         message = EMAIL_PATTERN.matcher(message).replaceAll("***EMAIL***");

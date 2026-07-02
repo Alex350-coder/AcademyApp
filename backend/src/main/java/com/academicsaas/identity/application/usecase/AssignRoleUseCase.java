@@ -1,6 +1,5 @@
 package com.academicsaas.identity.application.usecase;
 
-import com.academicsaas.identity.domain.model.Role;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.academicsaas.identity.domain.model.valueobject.UserId;

@@ -1,6 +1,5 @@
 package com.academicsaas.identity.infrastructure.persistence.mapper;
 
-import com.academicsaas.identity.domain.model.Permission;
 import com.academicsaas.identity.domain.model.Role;
 import com.academicsaas.identity.domain.model.User;
 import com.academicsaas.identity.domain.model.valueobject.Email;
@@ -10,7 +9,6 @@ import com.academicsaas.identity.domain.model.valueobject.UserStatus;
 import com.academicsaas.identity.infrastructure.persistence.entity.RoleJpaEntity;
 import com.academicsaas.identity.infrastructure.persistence.entity.UserJpaEntity;
 import java.util.Collections;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class UserMapper {

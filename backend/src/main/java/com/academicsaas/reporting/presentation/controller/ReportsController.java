@@ -77,9 +77,13 @@ public class ReportsController {
             .map(s -> {
                 var studentName = nameCache.computeIfAbsent(s.studentId(), id -> {
                     var studentOpt = studentRepository.findById(id);
-                    if (studentOpt.isEmpty()) return "Unknown";
+                    if (studentOpt.isEmpty()) {
+                        return "Unknown";
+                    }
                     var userOpt = userRepository.findById(studentOpt.get().getUserId());
-                    if (userOpt.isEmpty()) return "Unknown";
+                    if (userOpt.isEmpty()) {
+                        return "Unknown";
+                    }
                     var user = userOpt.get();
                     return (user.getFirstName() + " " + user.getLastName()).trim();
                 });

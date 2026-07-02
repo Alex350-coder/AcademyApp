@@ -38,8 +38,12 @@ public class Course {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Course course)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Course course)) {
+            return false;
+        }
         return id.equals(course.id);
     }
 

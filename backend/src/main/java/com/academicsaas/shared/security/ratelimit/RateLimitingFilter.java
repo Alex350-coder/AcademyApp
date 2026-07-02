@@ -85,7 +85,9 @@ public class RateLimitingFilter implements Filter {
     }
 
     private String maskIP(String ip) {
-        if (ip == null) return "unknown";
+        if (ip == null) {
+            return "unknown";
+        }
         var lastDot = ip.lastIndexOf('.');
         if (lastDot > 0) {
             return ip.substring(0, lastDot) + ".xxx";

@@ -52,7 +52,9 @@ public class DetectAtRiskStudentsUseCase {
                 })
                 .toList();
 
-            if (weightedGrades.isEmpty()) continue;
+            if (weightedGrades.isEmpty()) {
+                continue;
+            }
 
             var result = averageCalculator.calculate(weightedGrades);
 

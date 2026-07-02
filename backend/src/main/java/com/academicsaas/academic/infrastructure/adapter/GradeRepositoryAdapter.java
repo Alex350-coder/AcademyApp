@@ -1,10 +1,8 @@
 package com.academicsaas.academic.infrastructure.adapter;
 
 import com.academicsaas.academic.domain.model.Grade;
-import com.academicsaas.academic.domain.model.valueobject.Score;
 import com.academicsaas.academic.domain.repository.GradeRepository;
 import com.academicsaas.academic.infrastructure.entity.EvaluationJpaEntity;
-import com.academicsaas.academic.infrastructure.entity.GradeJpaEntity;
 import com.academicsaas.academic.infrastructure.mapper.AcademicMapper;
 import com.academicsaas.academic.infrastructure.repository.SpringDataEvaluationRepository;
 import com.academicsaas.academic.infrastructure.repository.SpringDataGradeRepository;

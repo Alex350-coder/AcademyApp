@@ -75,8 +75,12 @@ public class AttendanceController {
         var enrollments = enrollmentRepository.findBySectionId(sectionId);
         var enrollmentIds = enrollments.stream().map(e -> e.getId()).toList();
         var records = attendanceRepository.findByEnrollmentIds(enrollmentIds);
-        if (from != null) records = records.stream().filter(a -> !a.getDate().isBefore(from)).toList();
-        if (to != null) records = records.stream().filter(a -> !a.getDate().isAfter(to)).toList();
+        if (from != null) {
+            records = records.stream().filter(a -> !a.getDate().isBefore(from)).toList();
+        }
+        if (to != null) {
+            records = records.stream().filter(a -> !a.getDate().isAfter(to)).toList();
+        }
         return ResponseEntity.ok(records.stream().map(this::toDto).toList());
     }
 

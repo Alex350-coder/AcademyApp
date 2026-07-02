@@ -2,7 +2,6 @@ package com.academicsaas.identity.application.usecase;
 
 import com.academicsaas.identity.application.port.PasswordHasher;
 import com.academicsaas.identity.domain.exception.InvalidCredentialsException;
-import com.academicsaas.identity.domain.model.User;
 import com.academicsaas.identity.domain.model.valueobject.Email;
 import com.academicsaas.identity.domain.repository.InstitutionRepository;
 import com.academicsaas.identity.domain.repository.UserRepository;

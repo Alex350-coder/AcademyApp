@@ -1,10 +1,10 @@
 FROM maven:3.9.9-eclipse-temurin-21-alpine AS build
 WORKDIR /app
 RUN mkdir -p /root/.m2/repository
-COPY pom.xml .
+COPY pom.xml checkstyle.xml ./
 RUN --mount=type=cache,target=/root/.m2/repository mvn dependency:go-offline -B -Dcheckstyle.skip=true
 COPY src ./src
-RUN --mount=type=cache,target=/root/.m2/repository mvn clean package -Dmaven.test.skip=true -Dcheckstyle.skip=true
+RUN --mount=type=cache,target=/root/.m2/repository mvn clean package
 
 FROM eclipse-temurin:21-jre-alpine AS runtime
 WORKDIR /app

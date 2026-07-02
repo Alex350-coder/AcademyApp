@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.academicsaas.identity.domain.event.UserRegisteredEvent;
 import com.academicsaas.identity.domain.exception.DuplicateEmailException;
-import com.academicsaas.identity.domain.model.Role;
 import com.academicsaas.identity.domain.model.User;
 import com.academicsaas.identity.domain.model.valueobject.Email;
 import com.academicsaas.identity.domain.model.valueobject.InstitutionId;
