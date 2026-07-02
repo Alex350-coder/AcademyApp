@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import httpClient from '@/shared/api/httpClient';
 import { secretaryEndpoints } from './endpoints';
 import type { Enrollment } from './types';
-import { useToastStore } from '@/shared/components/feedback/Toast';
+import { useToastStore } from '@/shared/store/useToastStore';
 
 export function useEnrollments() {
   return useQuery<Enrollment[]>({

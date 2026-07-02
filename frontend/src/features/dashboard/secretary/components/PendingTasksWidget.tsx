@@ -35,7 +35,7 @@ export function PendingTasksWidget() {
             <div className="flex items-center justify-between p-3 rounded-md bg-surface-hover">
               <div>
                 <p className="text-sm font-medium text-text">Unregistered Attendance</p>
-                <p className="text-xs text-muted">Missing today's entry</p>
+                <p className="text-xs text-muted">Missing today&apos;s entry</p>
               </div>
               <span className="text-2xl font-bold text-danger">{data.unregisteredAttendance ?? 0}</span>
             </div>

@@ -1,33 +1,5 @@
-import { create } from 'zustand';
 import { useEffect, useState } from 'react';
-
-type ToastVariant = 'success' | 'error' | 'info' | 'warning';
-
-interface ToastMessage {
-  id: string;
-  message: string;
-  variant: ToastVariant;
-}
-
-interface ToastStore {
-  toasts: ToastMessage[];
-  addToast: (message: string, variant?: ToastVariant) => void;
-  removeToast: (id: string) => void;
-}
-
-export const useToastStore = create<ToastStore>((set) => ({
-  toasts: [],
-  addToast: (message, variant = 'info') => {
-    const id = crypto.randomUUID();
-    set((s) => ({ toasts: [...s.toasts, { id, message, variant }] }));
-    setTimeout(() => {
-      set((s) => ({ toasts: s.toasts.filter((t) => t.id !== id) }));
-    }, 5000);
-  },
-  removeToast: (id) => {
-    set((s) => ({ toasts: s.toasts.filter((t) => t.id !== id) }));
-  },
-}));
+import { useToastStore, type ToastVariant, type ToastMessage } from '@/shared/store/useToastStore';
 
 const variantStyles: Record<ToastVariant, string> = {
   success: 'bg-success-bg border-success text-success',

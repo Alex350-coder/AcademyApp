@@ -6,7 +6,7 @@ interface ManagementActions {
   onDeactivate: (id: string) => void;
 }
 
-interface ManagementDataTableProps<T extends Record<string, any>> {
+interface ManagementDataTableProps<T extends object> {
   columns: Column<T>[];
   data: T[];
   loading?: boolean;
@@ -16,7 +16,7 @@ interface ManagementDataTableProps<T extends Record<string, any>> {
   showActions?: boolean;
 }
 
-export function ManagementDataTable<T extends Record<string, any>>({
+export function ManagementDataTable<T extends object>({
   columns,
   data,
   loading,

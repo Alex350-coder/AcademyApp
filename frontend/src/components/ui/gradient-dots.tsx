@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion';
 
 type GradientDotsProps = React.ComponentProps<typeof motion.div> & {
-  dotSize?: number;
   spacing?: number;
   duration?: number;
   blobOpacity?: number;
@@ -9,7 +8,6 @@ type GradientDotsProps = React.ComponentProps<typeof motion.div> & {
 };
 
 export function GradientDots({
-  dotSize = 8,
   spacing = 28,
   duration = 70,
   blobOpacity = 0.12,

@@ -24,7 +24,7 @@ interface DataTableProps<T> {
   emptyAction?: ReactNode;
 }
 
-export function DataTable<T extends Record<string, any>>({
+export function DataTable<T>({
   columns,
   data,
   loading = false,
@@ -57,8 +57,8 @@ export function DataTable<T extends Record<string, any>>({
   const sorted = useMemo(() => {
     if (!sortKey) return filtered;
     return [...filtered].sort((a, b) => {
-      const aVal = a[sortKey];
-      const bVal = b[sortKey];
+      const aVal = a[sortKey as keyof T];
+      const bVal = b[sortKey as keyof T];
       if (aVal == null) return 1;
       if (bVal == null) return -1;
       const cmp = String(aVal).localeCompare(String(bVal));
@@ -170,7 +170,7 @@ export function DataTable<T extends Record<string, any>>({
               >
                 {columns.map((col) => (
                   <td key={col.key} className="px-4 py-3 text-[#f1f5f9]">
-                    {col.render ? col.render(item) : String(item[col.key] ?? '')}
+                    {col.render ? col.render(item) : String(item[col.key as keyof T] ?? '')}
                   </td>
                 ))}
               </tr>

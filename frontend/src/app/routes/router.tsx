@@ -1,15 +1,10 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { ProtectedRoute } from './ProtectedRoute';
 import { RoleGuard } from './RoleGuard';
+import { RoleDashboardRedirect } from './RoleDashboardRedirect';
 import AuthPage from '@/features/auth/pages/AuthPage';
 import ForgotPasswordPage from '@/features/auth/pages/ForgotPasswordPage';
 import ResetPasswordPage from '@/features/auth/pages/ResetPasswordPage';
-import { useAuthStore, getDashboardPath } from '@/shared/store/useAuthStore';
-
-function RoleDashboardRedirect() {
-  const user = useAuthStore((s) => s.user);
-  return <Navigate to={getDashboardPath(user)} replace />;
-}
 
 import { DirectorLayout } from '@/features/dashboard/director/components/DirectorLayout';
 import TeachersManagementPage from '@/features/dashboard/director/pages/TeachersManagementPage';

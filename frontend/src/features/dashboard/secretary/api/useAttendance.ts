@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import httpClient from '@/shared/api/httpClient';
 import { secretaryEndpoints } from './endpoints';
 import type { AttendanceRecord } from './types';
-import { useToastStore } from '@/shared/components/feedback/Toast';
+import { useToastStore } from '@/shared/store/useToastStore';
 
 export function useAttendanceBySection(sectionId: string, date: string) {
   return useQuery<AttendanceRecord[]>({

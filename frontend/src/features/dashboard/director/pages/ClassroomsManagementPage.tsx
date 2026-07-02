@@ -7,7 +7,7 @@ import { Button } from '@/shared/components/Button';
 import { Input } from '@/shared/components/Input';
 import { ErrorState } from '@/shared/components/feedback/ErrorState';
 import { EmptyState } from '@/shared/components/feedback/EmptyState';
-import { useToastStore } from '@/shared/components/feedback/Toast';
+import { useToastStore } from '@/shared/store/useToastStore';
 import { DataTable, type Column } from '@/shared/components/data-display/DataTable';
 import { directorEndpoints } from '../api/endpoints';
 import type { Classroom } from '../api/types';

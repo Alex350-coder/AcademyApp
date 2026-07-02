@@ -17,7 +17,9 @@ try {
     const token = parsed?.state?.accessToken;
     if (token) accessToken = token;
   }
-} catch {} /* ignore parse errors */
+} catch {
+  /* ignore parse errors */
+}
 
 export function setAccessToken(token: string | null) {
   accessToken = token;
