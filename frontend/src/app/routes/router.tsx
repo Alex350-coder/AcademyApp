@@ -1,58 +1,40 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
+import type { ComponentType } from 'react';
 import { ProtectedRoute } from './ProtectedRoute';
 import { RoleGuard } from './RoleGuard';
 import { RoleDashboardRedirect } from './RoleDashboardRedirect';
-import AuthPage from '@/features/auth/pages/AuthPage';
-import ForgotPasswordPage from '@/features/auth/pages/ForgotPasswordPage';
-import ResetPasswordPage from '@/features/auth/pages/ResetPasswordPage';
 
-import { DirectorLayout } from '@/features/dashboard/director/components/DirectorLayout';
-import TeachersManagementPage from '@/features/dashboard/director/pages/TeachersManagementPage';
-import StudentsManagementPage from '@/features/dashboard/director/pages/StudentsManagementPage';
-import CoursesManagementPage from '@/features/dashboard/director/pages/CoursesManagementPage';
-import ClassroomsManagementPage from '@/features/dashboard/director/pages/ClassroomsManagementPage';
-import ReportsPage from '@/features/dashboard/director/pages/ReportsPage';
+const lazyDefault = (loader: () => Promise<{ default: ComponentType }>) => ({
+  lazy: () => loader().then((m) => ({ Component: m.default })),
+});
 
-import { SecretaryLayout } from '@/features/dashboard/secretary/components/SecretaryLayout';
-import SecretaryDashboardPage from '@/features/dashboard/secretary/pages/SecretaryDashboardPage';
-import EnrollmentWizardPage from '@/features/dashboard/secretary/pages/EnrollmentWizardPage';
-import AttendanceRegistryPage from '@/features/dashboard/secretary/pages/AttendanceRegistryPage';
-
-import { TeacherLayout } from '@/features/dashboard/teacher/components/TeacherLayout';
-import TeacherDashboardPage from '@/features/dashboard/teacher/pages/TeacherDashboardPage';
-import MySectionsPage from '@/features/dashboard/teacher/pages/MySectionsPage';
-import TeacherAttendanceRegistryPage from '@/features/dashboard/teacher/pages/AttendanceRegistryPage';
-import GradesPage from '@/features/dashboard/teacher/pages/GradesPage';
-
-import { StudentLayout } from '@/features/dashboard/student/components/StudentLayout';
-import StudentDashboardPage from '@/features/dashboard/student/pages/StudentDashboardPage';
-import MyCoursesPage from '@/features/dashboard/student/pages/MyCoursesPage';
-import MySchedulePage from '@/features/dashboard/student/pages/MySchedulePage';
-import MyAttendancePage from '@/features/dashboard/student/pages/MyAttendancePage';
-import MyGradesPage from '@/features/dashboard/student/pages/MyGradesPage';
-
-import LandingPage from '@/landing/LandingPage';
+const lazyNamed = <K extends string>(
+  loader: () => Promise<Record<K, ComponentType>>,
+  name: K,
+) => ({
+  lazy: () => loader().then((m) => ({ Component: m[name] })),
+});
 
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <LandingPage />,
+    ...lazyDefault(() => import('@/landing/LandingPage')),
   },
   {
     path: '/login',
-    element: <AuthPage />,
+    ...lazyDefault(() => import('@/features/auth/pages/AuthPage')),
   },
   {
     path: '/register',
-    element: <AuthPage />,
+    ...lazyDefault(() => import('@/features/auth/pages/AuthPage')),
   },
   {
     path: '/forgot-password',
-    element: <ForgotPasswordPage />,
+    ...lazyDefault(() => import('@/features/auth/pages/ForgotPasswordPage')),
   },
   {
     path: '/reset-password',
-    element: <ResetPasswordPage />,
+    ...lazyDefault(() => import('@/features/auth/pages/ResetPasswordPage')),
   },
   {
     path: '/app',
@@ -71,14 +53,14 @@ export const router = createBrowserRouter([
         element: <RoleGuard allowedRoles={['DIRECTOR']} />,
         children: [
           {
-            element: <DirectorLayout />,
+            ...lazyNamed(() => import('@/features/dashboard/director/components/DirectorLayout'), 'DirectorLayout'),
             children: [
-              { index: true, element: <ReportsPage /> },
-              { path: 'teachers', element: <TeachersManagementPage /> },
-              { path: 'students', element: <StudentsManagementPage /> },
-              { path: 'courses', element: <CoursesManagementPage /> },
-              { path: 'classrooms', element: <ClassroomsManagementPage /> },
-              { path: 'reports', element: <ReportsPage /> },
+              { index: true, ...lazyDefault(() => import('@/features/dashboard/director/pages/ReportsPage')) },
+              { path: 'teachers', ...lazyDefault(() => import('@/features/dashboard/director/pages/TeachersManagementPage')) },
+              { path: 'students', ...lazyDefault(() => import('@/features/dashboard/director/pages/StudentsManagementPage')) },
+              { path: 'courses', ...lazyDefault(() => import('@/features/dashboard/director/pages/CoursesManagementPage')) },
+              { path: 'classrooms', ...lazyDefault(() => import('@/features/dashboard/director/pages/ClassroomsManagementPage')) },
+              { path: 'reports', ...lazyDefault(() => import('@/features/dashboard/director/pages/ReportsPage')) },
             ],
           },
         ],
@@ -88,11 +70,11 @@ export const router = createBrowserRouter([
         element: <RoleGuard allowedRoles={['SECRETARY']} />,
         children: [
           {
-            element: <SecretaryLayout />,
+            ...lazyNamed(() => import('@/features/dashboard/secretary/components/SecretaryLayout'), 'SecretaryLayout'),
             children: [
-              { index: true, element: <SecretaryDashboardPage /> },
-              { path: 'enrollments', element: <EnrollmentWizardPage /> },
-              { path: 'attendance', element: <AttendanceRegistryPage /> },
+              { index: true, ...lazyDefault(() => import('@/features/dashboard/secretary/pages/SecretaryDashboardPage')) },
+              { path: 'enrollments', ...lazyDefault(() => import('@/features/dashboard/secretary/pages/EnrollmentWizardPage')) },
+              { path: 'attendance', ...lazyDefault(() => import('@/features/dashboard/secretary/pages/AttendanceRegistryPage')) },
             ],
           },
         ],
@@ -102,12 +84,12 @@ export const router = createBrowserRouter([
         element: <RoleGuard allowedRoles={['TEACHER']} />,
         children: [
           {
-            element: <TeacherLayout />,
+            ...lazyNamed(() => import('@/features/dashboard/teacher/components/TeacherLayout'), 'TeacherLayout'),
             children: [
-              { index: true, element: <TeacherDashboardPage /> },
-              { path: 'courses', element: <MySectionsPage /> },
-              { path: 'grades', element: <GradesPage /> },
-              { path: 'attendance', element: <TeacherAttendanceRegistryPage /> },
+              { index: true, ...lazyDefault(() => import('@/features/dashboard/teacher/pages/TeacherDashboardPage')) },
+              { path: 'courses', ...lazyDefault(() => import('@/features/dashboard/teacher/pages/MySectionsPage')) },
+              { path: 'grades', ...lazyDefault(() => import('@/features/dashboard/teacher/pages/GradesPage')) },
+              { path: 'attendance', ...lazyDefault(() => import('@/features/dashboard/teacher/pages/AttendanceRegistryPage')) },
             ],
           },
         ],
@@ -117,13 +99,13 @@ export const router = createBrowserRouter([
         element: <RoleGuard allowedRoles={['STUDENT']} />,
         children: [
           {
-            element: <StudentLayout />,
+            ...lazyNamed(() => import('@/features/dashboard/student/components/StudentLayout'), 'StudentLayout'),
             children: [
-              { index: true, element: <StudentDashboardPage /> },
-              { path: 'courses', element: <MyCoursesPage /> },
-              { path: 'grades', element: <MyGradesPage /> },
-              { path: 'attendance', element: <MyAttendancePage /> },
-              { path: 'schedule', element: <MySchedulePage /> },
+              { index: true, ...lazyDefault(() => import('@/features/dashboard/student/pages/StudentDashboardPage')) },
+              { path: 'courses', ...lazyDefault(() => import('@/features/dashboard/student/pages/MyCoursesPage')) },
+              { path: 'grades', ...lazyDefault(() => import('@/features/dashboard/student/pages/MyGradesPage')) },
+              { path: 'attendance', ...lazyDefault(() => import('@/features/dashboard/student/pages/MyAttendancePage')) },
+              { path: 'schedule', ...lazyDefault(() => import('@/features/dashboard/student/pages/MySchedulePage')) },
             ],
           },
         ],
