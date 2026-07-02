@@ -1,5 +1,6 @@
 package com.academicsaas.academic.presentation.controller;
 
+import com.academicsaas.academic.domain.repository.CourseRepository;
 import com.academicsaas.academic.infrastructure.adapter.CourseSectionRepositoryAdapter;
 import com.academicsaas.academic.infrastructure.entity.TeacherJpaEntity;
 import com.academicsaas.academic.infrastructure.repository.SpringDataTeacherRepository;
@@ -27,13 +28,16 @@ public class TeacherController {
     private final SpringDataTeacherRepository teacherRepository;
     private final CourseSectionRepositoryAdapter sectionRepository;
     private final SpringDataUserRepository userRepository;
+    private final CourseRepository courseRepository;
 
     public TeacherController(SpringDataTeacherRepository teacherRepository,
                              CourseSectionRepositoryAdapter sectionRepository,
-                             SpringDataUserRepository userRepository) {
+                             SpringDataUserRepository userRepository,
+                             CourseRepository courseRepository) {
         this.teacherRepository = teacherRepository;
         this.sectionRepository = sectionRepository;
         this.userRepository = userRepository;
+        this.courseRepository = courseRepository;
     }
 
     @GetMapping
@@ -68,14 +72,23 @@ public class TeacherController {
         var userId = UUID.fromString(auth.getName());
         var teacher = teacherRepository.findByUserId(userId)
             .orElseThrow(() -> new NotFoundException("Teacher profile for user", userId));
+        var teacherUser = userRepository.findById(teacher.getUserId()).orElse(null);
+        var teacherName = teacherUser != null
+            ? (teacherUser.getFirstName() + " " + teacherUser.getLastName()).trim()
+            : null;
         var sections = sectionRepository.findByTeacherId(teacher.getId());
+        Map<UUID, String> courseNameCache = new HashMap<>();
         return ResponseEntity.ok(sections.stream()
-            .map(s -> new SectionDto(
-                s.getId(), s.getCourseId(), s.getAcademicPeriodId(),
-                s.getTeacherId(), s.getClassroomId(),
-                s.getName(), s.getCapacity(), s.getEnrolledCount(),
-                null, null,
-                s.getCreatedAt(), s.getUpdatedAt()))
+            .map(s -> {
+                var courseName = courseNameCache.computeIfAbsent(s.getCourseId(),
+                    id -> courseRepository.findById(id).map(c -> c.getName()).orElse(null));
+                return new SectionDto(
+                    s.getId(), s.getCourseId(), s.getAcademicPeriodId(),
+                    s.getTeacherId(), s.getClassroomId(),
+                    s.getName(), s.getCapacity(), s.getEnrolledCount(),
+                    courseName, teacherName,
+                    s.getCreatedAt(), s.getUpdatedAt());
+            })
             .toList());
     }
 

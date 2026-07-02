@@ -132,11 +132,15 @@ public class StudentController {
         var userId = UUID.fromString(auth.getName());
         var student = studentRepository.findByUserId(userId)
             .orElseThrow(() -> new NotFoundException("Student profile for user", userId));
+        var studentUser = userRepository.findById(student.getUserId()).orElse(null);
+        var studentName = studentUser != null
+            ? (studentUser.getFirstName() + " " + studentUser.getLastName()).trim()
+            : null;
         var enrollments = enrollmentRepository.findByStudentId(student.getId());
         var enrollmentIds = enrollments.stream().map(e -> e.getId()).toList();
         var records = attendanceRepository.findByEnrollmentIds(enrollmentIds);
         return ResponseEntity.ok(records.stream()
-            .map(a -> new AttendanceDto(a.getId(), a.getEnrollmentId(), a.getDate(),
+            .map(a -> new AttendanceDto(a.getId(), a.getEnrollmentId(), student.getId(), studentName, a.getDate(),
                 a.getStatus().name(), a.getJustification(),
                 a.getCreatedAt(), a.getUpdatedAt()))
             .toList());

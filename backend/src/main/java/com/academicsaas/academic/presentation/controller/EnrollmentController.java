@@ -2,13 +2,16 @@ package com.academicsaas.academic.presentation.controller;
 
 import com.academicsaas.academic.application.usecase.EnrollStudentUseCase;
 import com.academicsaas.academic.domain.model.Enrollment;
+import com.academicsaas.academic.domain.repository.StudentRepository;
 import com.academicsaas.academic.infrastructure.adapter.EnrollmentRepositoryAdapter;
 import com.academicsaas.academic.presentation.dto.BulkEnrollmentRequest;
 import com.academicsaas.academic.presentation.dto.CreateEnrollmentRequest;
 import com.academicsaas.academic.presentation.dto.EnrollmentDto;
+import com.academicsaas.identity.infrastructure.persistence.repository.SpringDataUserRepository;
 import com.academicsaas.shared.event.CacheInvalidationService;
 import com.academicsaas.shared.exception.NotFoundException;
 import jakarta.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -29,13 +32,19 @@ public class EnrollmentController {
 
     private final EnrollStudentUseCase enrollStudentUseCase;
     private final EnrollmentRepositoryAdapter enrollmentRepository;
+    private final StudentRepository studentRepository;
+    private final SpringDataUserRepository userRepository;
     private final CacheInvalidationService cacheInvalidationService;
 
     public EnrollmentController(EnrollStudentUseCase enrollStudentUseCase,
                                 EnrollmentRepositoryAdapter enrollmentRepository,
+                                StudentRepository studentRepository,
+                                SpringDataUserRepository userRepository,
                                 CacheInvalidationService cacheInvalidationService) {
         this.enrollStudentUseCase = enrollStudentUseCase;
         this.enrollmentRepository = enrollmentRepository;
+        this.studentRepository = studentRepository;
+        this.userRepository = userRepository;
         this.cacheInvalidationService = cacheInvalidationService;
     }
 
@@ -71,14 +80,14 @@ public class EnrollmentController {
     @PreAuthorize("hasAnyRole('TEACHER', 'DIRECTOR')")
     public ResponseEntity<List<EnrollmentDto>> listBySection(@PathVariable UUID sectionId) {
         var enrollments = enrollmentRepository.findBySectionId(sectionId);
-        return ResponseEntity.ok(enrollments.stream().map(this::toDto).toList());
+        return ResponseEntity.ok(toDtos(enrollments));
     }
 
     @GetMapping("/student/{studentId}")
     @PreAuthorize("hasAnyRole('TEACHER', 'DIRECTOR')")
     public ResponseEntity<List<EnrollmentDto>> listByStudent(@PathVariable UUID studentId) {
         var enrollments = enrollmentRepository.findByStudentId(studentId);
-        return ResponseEntity.ok(enrollments.stream().map(this::toDto).toList());
+        return ResponseEntity.ok(toDtos(enrollments));
     }
 
     @DeleteMapping("/{id}")
@@ -92,9 +101,21 @@ public class EnrollmentController {
         return ResponseEntity.noContent().build();
     }
 
-    private EnrollmentDto toDto(Enrollment e) {
-        return new EnrollmentDto(e.getId(), e.getStudentId(), e.getSectionId(),
-            e.getStatus().name(), e.getEnrolledAt(), e.getWithdrawnAt(),
-            e.getCreatedAt(), e.getUpdatedAt());
+    private List<EnrollmentDto> toDtos(List<Enrollment> enrollments) {
+        Map<UUID, String> studentNameCache = new HashMap<>();
+        return enrollments.stream()
+            .map(e -> new EnrollmentDto(
+                e.getId(), e.getStudentId(),
+                studentNameCache.computeIfAbsent(e.getStudentId(), this::resolveStudentName),
+                e.getSectionId(), e.getStatus().name(), e.getEnrolledAt(), e.getWithdrawnAt(),
+                e.getCreatedAt(), e.getUpdatedAt()))
+            .toList();
+    }
+
+    private String resolveStudentName(UUID studentId) {
+        return studentRepository.findById(studentId)
+            .flatMap(student -> userRepository.findById(student.getUserId()))
+            .map(user -> (user.getFirstName() + " " + user.getLastName()).trim())
+            .orElse("Unknown");
     }
 }

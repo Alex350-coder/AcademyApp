@@ -1,13 +1,17 @@
 package com.academicsaas.academic.presentation.controller;
 
 import com.academicsaas.academic.application.usecase.RegisterAttendanceUseCase;
+import com.academicsaas.academic.domain.model.Enrollment;
+import com.academicsaas.academic.domain.repository.StudentRepository;
 import com.academicsaas.academic.infrastructure.adapter.AttendanceRepositoryAdapter;
 import com.academicsaas.academic.infrastructure.adapter.EnrollmentRepositoryAdapter;
 import com.academicsaas.academic.presentation.dto.AttendanceDto;
 import com.academicsaas.academic.presentation.dto.BulkAttendanceRequest;
+import com.academicsaas.identity.infrastructure.persistence.repository.SpringDataUserRepository;
 import com.academicsaas.shared.event.CacheInvalidationService;
 import jakarta.validation.Valid;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -29,15 +33,21 @@ public class AttendanceController {
     private final RegisterAttendanceUseCase registerAttendanceUseCase;
     private final AttendanceRepositoryAdapter attendanceRepository;
     private final EnrollmentRepositoryAdapter enrollmentRepository;
+    private final StudentRepository studentRepository;
+    private final SpringDataUserRepository userRepository;
     private final CacheInvalidationService cacheInvalidationService;
 
     public AttendanceController(RegisterAttendanceUseCase registerAttendanceUseCase,
                                 AttendanceRepositoryAdapter attendanceRepository,
                                 EnrollmentRepositoryAdapter enrollmentRepository,
+                                StudentRepository studentRepository,
+                                SpringDataUserRepository userRepository,
                                 CacheInvalidationService cacheInvalidationService) {
         this.registerAttendanceUseCase = registerAttendanceUseCase;
         this.attendanceRepository = attendanceRepository;
         this.enrollmentRepository = enrollmentRepository;
+        this.studentRepository = studentRepository;
+        this.userRepository = userRepository;
         this.cacheInvalidationService = cacheInvalidationService;
     }
 
@@ -81,7 +91,7 @@ public class AttendanceController {
         if (to != null) {
             records = records.stream().filter(a -> !a.getDate().isAfter(to)).toList();
         }
-        return ResponseEntity.ok(records.stream().map(this::toDto).toList());
+        return ResponseEntity.ok(toDtos(records, enrollments));
     }
 
     @GetMapping("/student/{studentId}")
@@ -90,12 +100,31 @@ public class AttendanceController {
         var enrollments = enrollmentRepository.findByStudentId(studentId);
         var enrollmentIds = enrollments.stream().map(e -> e.getId()).toList();
         var records = attendanceRepository.findByEnrollmentIds(enrollmentIds);
-        return ResponseEntity.ok(records.stream().map(this::toDto).toList());
+        return ResponseEntity.ok(toDtos(records, enrollments));
     }
 
-    private AttendanceDto toDto(com.academicsaas.academic.domain.model.Attendance a) {
-        return new AttendanceDto(a.getId(), a.getEnrollmentId(), a.getDate(),
-            a.getStatus().name(), a.getJustification(),
-            a.getCreatedAt(), a.getUpdatedAt());
+    private List<AttendanceDto> toDtos(List<com.academicsaas.academic.domain.model.Attendance> records,
+                                       List<Enrollment> enrollments) {
+        Map<UUID, UUID> studentIdByEnrollmentId = new HashMap<>();
+        for (var enrollment : enrollments) {
+            studentIdByEnrollmentId.put(enrollment.getId(), enrollment.getStudentId());
+        }
+        Map<UUID, String> studentNameCache = new HashMap<>();
+        return records.stream().map(a -> {
+            var studentId = studentIdByEnrollmentId.get(a.getEnrollmentId());
+            var studentName = studentId != null
+                ? studentNameCache.computeIfAbsent(studentId, this::resolveStudentName)
+                : null;
+            return new AttendanceDto(a.getId(), a.getEnrollmentId(), studentId, studentName, a.getDate(),
+                a.getStatus().name(), a.getJustification(),
+                a.getCreatedAt(), a.getUpdatedAt());
+        }).toList();
+    }
+
+    private String resolveStudentName(UUID studentId) {
+        return studentRepository.findById(studentId)
+            .flatMap(student -> userRepository.findById(student.getUserId()))
+            .map(user -> (user.getFirstName() + " " + user.getLastName()).trim())
+            .orElse("Unknown");
     }
 }
