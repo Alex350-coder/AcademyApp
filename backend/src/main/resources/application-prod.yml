@@ -1,0 +1,37 @@
+spring:
+  datasource:
+    url: ${DATASOURCE_URL}
+    username: ${DATASOURCE_USERNAME}
+    password: ${DATASOURCE_PASSWORD}
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+
+server:
+  forward-headers-strategy: NATIVE
+
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+
+app:
+  email:
+    provider: ${EMAIL_PROVIDER:resend}
+    from-email: ${EMAIL_FROM:noreply@academiasaas.com}
+    api-key: ${RESEND_API_KEY}
+  storage:
+    provider: ${STORAGE_PROVIDER:local}
+
+logging:
+  level:
+    root: WARN
+    com.academicsaas: INFO
+    org.springframework.security: WARN
+    org.hibernate.SQL: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"

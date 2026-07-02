@@ -1,0 +1,45 @@
+name: Security Scan
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+  push:
+    branches: [main]
+    paths:
+      - 'backend/pom.xml'
+      - 'frontend/package.json'
+      - 'frontend/package-lock.json'
+
+jobs:
+  dependency-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: OWASP Dependency Check (Backend)
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          project: 'academic-saas-backend'
+          path: './backend'
+          format: 'HTML'
+          failBuildOnCVSS: 7
+
+      - name: NPM Audit (Frontend)
+        run: |
+          npm audit --audit-level=high
+        working-directory: ./frontend
+        continue-on-error: true
+
+      - name: Upload Dependency Check Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-check-report
+          path: ./backend/dependency-check-report.html
