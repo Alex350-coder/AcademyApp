@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -51,6 +52,16 @@ class GlobalExceptionHandler {
     ResponseEntity<ApiError> handleDomain(DomainException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(new ApiError(ex.getErrorCode(), ex.getMessage(), 400));
+    }
+
+    // Covers both the legacy AccessDeniedException and Spring Security 6's
+    // AuthorizationDeniedException (which extends it) thrown by @PreAuthorize
+    // denials. Without this handler these fall through to handleGeneric() and
+    // surface as a confusing 500 instead of a 403.
+    @ExceptionHandler(AccessDeniedException.class)
+    ResponseEntity<ApiError> handleAccessDenied(AccessDeniedException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+            .body(ApiError.forbidden("Access denied"));
     }
 
     @ExceptionHandler(Exception.class)

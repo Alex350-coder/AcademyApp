@@ -10,15 +10,21 @@ const DAYS = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'];
 export default function MySchedulePage() {
   const { data, isLoading, isError, refetch } = useMySchedule();
 
+  // dayOfWeek/startTime aren't populated by the backend yet (no timetable
+  // feature exists) - only entries with real schedule data are shown here.
+  const scheduled = useMemo(
+    () => (data ?? []).filter((entry) => entry.dayOfWeek && entry.startTime),
+    [data],
+  );
+
   const scheduleMap = useMemo(() => {
     const map: Record<string, ScheduleEntry[]> = {};
-    if (!data) return map;
-    data.forEach((entry) => {
+    scheduled.forEach((entry) => {
       if (!map[entry.dayOfWeek]) map[entry.dayOfWeek] = [];
       map[entry.dayOfWeek].push(entry);
     });
     return map;
-  }, [data]);
+  }, [scheduled]);
 
   if (isError) {
     return <ErrorState message="Could not load your schedule" onRetry={() => refetch()} />;
@@ -44,7 +50,7 @@ export default function MySchedulePage() {
     );
   }
 
-  if (!data || data.length === 0) {
+  if (scheduled.length === 0) {
     return (
       <div className="space-y-6">
         <div>
@@ -52,8 +58,12 @@ export default function MySchedulePage() {
           <p className="text-muted text-sm mt-1">Weekly class schedule</p>
         </div>
         <EmptyState
-          title="No classes scheduled"
-          description="Your schedule is empty. Enroll in courses to see your schedule here."
+          title="No schedule available"
+          description={
+            !data || data.length === 0
+              ? 'Your schedule is empty. Enroll in courses to see your schedule here.'
+              : "Class times haven't been set up for your courses yet."
+          }
         />
       </div>
     );
@@ -119,7 +129,7 @@ export default function MySchedulePage() {
                 </tr>
               </thead>
               <tbody>
-                {data
+                {[...scheduled]
                   .sort((a, b) => {
                     const dayDiff = DAYS.indexOf(a.dayOfWeek) - DAYS.indexOf(b.dayOfWeek);
                     if (dayDiff !== 0) return dayDiff;

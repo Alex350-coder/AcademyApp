@@ -10,12 +10,15 @@ export function UpcomingClassWidget() {
   const { data, isLoading, isError, refetch } = useMySchedule();
 
   const nextClass = useMemo(() => {
-    if (!data || data.length === 0) return null;
+    // dayOfWeek/startTime aren't populated by the backend yet (no timetable
+    // feature exists) - skip entries missing that data instead of crashing.
+    const scheduled = (data ?? []).filter((s) => s.dayOfWeek && s.startTime);
+    if (scheduled.length === 0) return null;
     const now = new Date();
     const currentDay = DAYS[now.getDay()];
     const currentTime = now.getHours() * 60 + now.getMinutes();
 
-    const sorted = [...data].sort((a, b) => {
+    const sorted = [...scheduled].sort((a, b) => {
       const dayOrder = DAYS.indexOf(a.dayOfWeek) - DAYS.indexOf(b.dayOfWeek);
       if (dayOrder !== 0) return dayOrder;
       return a.startTime.localeCompare(b.startTime);

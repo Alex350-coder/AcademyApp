@@ -49,7 +49,7 @@ public class EnrollmentController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('DIRECTOR')")
+    @PreAuthorize("hasAnyRole('DIRECTOR', 'SECRETARY')")
     public ResponseEntity<Map<String, Object>> create(@Valid @RequestBody CreateEnrollmentRequest request) {
         var result = enrollStudentUseCase.execute(
             new EnrollStudentUseCase.Request(request.studentId(), request.sectionId()));
@@ -76,8 +76,19 @@ public class EnrollmentController {
         return ResponseEntity.ok(Map.of("results", results));
     }
 
+    @GetMapping("/pending-tasks")
+    @PreAuthorize("hasAnyRole('DIRECTOR', 'SECRETARY')")
+    public ResponseEntity<Map<String, Object>> pendingTasks() {
+        // No "pending approval" enrollment status or per-section attendance-due
+        // schedule exists in the domain model yet, so these are placeholders
+        // until that workflow is designed rather than a guessed cross-tenant query.
+        return ResponseEntity.ok(Map.of(
+            "pendingEnrollments", 0,
+            "unregisteredAttendance", 0));
+    }
+
     @GetMapping("/section/{sectionId}")
-    @PreAuthorize("hasAnyRole('TEACHER', 'DIRECTOR')")
+    @PreAuthorize("hasAnyRole('TEACHER', 'DIRECTOR', 'SECRETARY')")
     public ResponseEntity<List<EnrollmentDto>> listBySection(@PathVariable UUID sectionId) {
         var enrollments = enrollmentRepository.findBySectionId(sectionId);
         return ResponseEntity.ok(toDtos(enrollments));

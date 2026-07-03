@@ -61,7 +61,7 @@ public class AttendanceController {
     }
 
     @PostMapping("/bulk")
-    @PreAuthorize("hasAnyRole('TEACHER', 'DIRECTOR')")
+    @PreAuthorize("hasAnyRole('TEACHER', 'DIRECTOR', 'SECRETARY')")
     public ResponseEntity<Map<String, Object>> registerBulk(@Valid @RequestBody BulkAttendanceRequest request) {
         var bulkRequest = new RegisterAttendanceUseCase.BulkRequest(
             request.sectionId(),
@@ -77,7 +77,7 @@ public class AttendanceController {
     }
 
     @GetMapping("/section/{sectionId}")
-    @PreAuthorize("hasAnyRole('TEACHER', 'DIRECTOR')")
+    @PreAuthorize("hasAnyRole('TEACHER', 'DIRECTOR', 'SECRETARY')")
     public ResponseEntity<List<AttendanceDto>> getBySection(
             @PathVariable UUID sectionId,
             @RequestParam(required = false) LocalDate from,
