@@ -27,7 +27,7 @@ export function Navbar() {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${
         scrolled
-          ? 'bg-surface/80 backdrop-blur-lg shadow-elevation-1'
+          ? 'bg-primary/85 backdrop-blur-lg shadow-elevation-2'
           : 'bg-transparent'
       }`}
     >
@@ -35,13 +35,16 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16">
           <Link
             to="/"
-            className="text-xl font-bold text-text flex items-center gap-1.5"
+            className={`text-xl font-bold flex items-center gap-1.5 transition-colors ${
+              scrolled ? 'text-white' : 'text-text'
+            }`}
           >
             <span className="w-7 h-7 rounded-md bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white text-xs font-bold">
               A
             </span>
             <span>
-              Academia <span className="text-primary">SaaS</span>
+              Academia{' '}
+              <span className={scrolled ? 'text-white/70' : 'text-primary'}>SaaS</span>
             </span>
           </Link>
 
@@ -50,7 +53,9 @@ export function Navbar() {
               <button
                 key={link.href}
                 onClick={() => handleNavClick(link.href)}
-                className="text-text-secondary hover:text-text transition-colors text-sm font-medium"
+                className={`transition-colors text-sm font-medium ${
+                  scrolled ? 'text-white/70 hover:text-white' : 'text-text-secondary hover:text-text'
+                }`}
               >
                 {link.label}
               </button>
@@ -71,7 +76,11 @@ export function Navbar() {
           </div>
 
           <button
-            className="md:hidden p-2 rounded-md text-text-secondary hover:text-text hover:bg-surface-hover transition-colors"
+            className={`md:hidden p-2 rounded-md transition-colors ${
+              scrolled
+                ? 'text-white/70 hover:text-white hover:bg-white/10'
+                : 'text-text-secondary hover:text-text hover:bg-surface-hover'
+            }`}
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label={mobileOpen ? 'Cerrar menú' : 'Abrir menú'}
           >
