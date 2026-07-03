@@ -33,7 +33,7 @@ export default function StudentDashboardPage() {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <Button
               variant="secondary"
-              onClick={() => navigate('/student/courses')}
+              onClick={() => navigate('/app/student/courses')}
               className="flex flex-col items-center justify-center p-4"
             >
               <span className="text-2xl mb-1">📚</span>
@@ -41,7 +41,7 @@ export default function StudentDashboardPage() {
             </Button>
             <Button
               variant="secondary"
-              onClick={() => navigate('/student/grades')}
+              onClick={() => navigate('/app/student/grades')}
               className="flex flex-col items-center justify-center p-4"
             >
               <span className="text-2xl mb-1">📊</span>
@@ -49,7 +49,7 @@ export default function StudentDashboardPage() {
             </Button>
             <Button
               variant="secondary"
-              onClick={() => navigate('/student/attendance')}
+              onClick={() => navigate('/app/student/attendance')}
               className="flex flex-col items-center justify-center p-4"
             >
               <span className="text-2xl mb-1">✅</span>
@@ -57,7 +57,7 @@ export default function StudentDashboardPage() {
             </Button>
             <Button
               variant="secondary"
-              onClick={() => navigate('/student/schedule')}
+              onClick={() => navigate('/app/student/schedule')}
               className="flex flex-col items-center justify-center p-4"
             >
               <span className="text-2xl mb-1">📅</span>

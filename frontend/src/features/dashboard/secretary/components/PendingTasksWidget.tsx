@@ -44,7 +44,7 @@ export function PendingTasksWidget() {
                 variant="primary"
                 size="sm"
                 className="flex-1"
-                onClick={() => navigate('/secretary/enrollments')}
+                onClick={() => navigate('/app/secretary/enrollments')}
               >
                 Go to Enrollments
               </Button>
@@ -52,7 +52,7 @@ export function PendingTasksWidget() {
                 variant="secondary"
                 size="sm"
                 className="flex-1"
-                onClick={() => navigate('/secretary/attendance')}
+                onClick={() => navigate('/app/secretary/attendance')}
               >
                 Register Attendance
               </Button>

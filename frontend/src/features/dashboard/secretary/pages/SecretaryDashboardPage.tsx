@@ -24,7 +24,7 @@ export default function SecretaryDashboardPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Button
                 variant="secondary"
-                onClick={() => navigate('/secretary/enrollments')}
+                onClick={() => navigate('/app/secretary/enrollments')}
                 className="flex flex-col items-center justify-center p-6 text-center"
               >
                 <span className="text-3xl mb-2">📋</span>
@@ -33,7 +33,7 @@ export default function SecretaryDashboardPage() {
               </Button>
               <Button
                 variant="secondary"
-                onClick={() => navigate('/secretary/attendance')}
+                onClick={() => navigate('/app/secretary/attendance')}
                 className="flex flex-col items-center justify-center p-6 text-center"
               >
                 <span className="text-3xl mb-2">✅</span>
