@@ -6,5 +6,5 @@ import java.util.List;
 import java.util.UUID;
 
 public interface AttendanceReportRepository {
-    List<AttendanceTrendData> getAttendanceTrend(UUID academicPeriodId, LocalDate from, LocalDate to);
+    List<AttendanceTrendData> getAttendanceTrend(UUID institutionId, UUID academicPeriodId, LocalDate from, LocalDate to);
 }

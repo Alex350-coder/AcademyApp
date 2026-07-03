@@ -5,5 +5,5 @@ import java.util.List;
 import java.util.UUID;
 
 public interface CourseReportRepository {
-    List<CoursePerformanceData> getCoursePerformance(UUID academicPeriodId);
+    List<CoursePerformanceData> getCoursePerformance(UUID institutionId, UUID academicPeriodId);
 }

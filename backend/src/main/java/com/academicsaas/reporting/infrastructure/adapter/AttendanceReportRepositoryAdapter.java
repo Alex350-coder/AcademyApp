@@ -1,6 +1,7 @@
 package com.academicsaas.reporting.infrastructure.adapter;
 
 import com.academicsaas.academic.infrastructure.repository.SpringDataAttendanceRepository;
+import com.academicsaas.academic.infrastructure.repository.SpringDataCourseRepository;
 import com.academicsaas.academic.infrastructure.repository.SpringDataCourseSectionRepository;
 import com.academicsaas.academic.infrastructure.repository.SpringDataEnrollmentRepository;
 import com.academicsaas.reporting.application.port.AttendanceReportRepository;
@@ -19,20 +20,29 @@ public class AttendanceReportRepositoryAdapter implements AttendanceReportReposi
     private final SpringDataAttendanceRepository attendanceRepository;
     private final SpringDataCourseSectionRepository sectionRepository;
     private final SpringDataEnrollmentRepository enrollmentRepository;
+    private final SpringDataCourseRepository courseRepository;
 
     public AttendanceReportRepositoryAdapter(SpringDataAttendanceRepository attendanceRepository,
                                              SpringDataCourseSectionRepository sectionRepository,
-                                             SpringDataEnrollmentRepository enrollmentRepository) {
+                                             SpringDataEnrollmentRepository enrollmentRepository,
+                                             SpringDataCourseRepository courseRepository) {
         this.attendanceRepository = attendanceRepository;
         this.sectionRepository = sectionRepository;
         this.enrollmentRepository = enrollmentRepository;
+        this.courseRepository = courseRepository;
     }
 
     @Override
-    public List<AttendanceTrendData> getAttendanceTrend(UUID academicPeriodId, LocalDate from, LocalDate to) {
-        var sections = academicPeriodId != null
+    public List<AttendanceTrendData> getAttendanceTrend(UUID institutionId, UUID academicPeriodId, LocalDate from, LocalDate to) {
+        var ownCourseIds = courseRepository.findByInstitutionId(institutionId).stream()
+            .map(c -> c.getId())
+            .collect(Collectors.toSet());
+
+        var sections = (academicPeriodId != null
             ? sectionRepository.findByAcademicPeriodId(academicPeriodId)
-            : sectionRepository.findAll();
+            : sectionRepository.findAll()).stream()
+            .filter(s -> ownCourseIds.contains(s.getCourseId()))
+            .toList();
 
         var enrollmentIds = sections.stream()
             .flatMap(s -> enrollmentRepository.findBySectionId(s.getId()).stream())

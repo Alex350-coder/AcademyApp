@@ -38,6 +38,11 @@ public class CourseRepositoryAdapter implements CourseRepository {
     }
 
     @Override
+    public List<Course> findByInstitutionId(UUID institutionId) {
+        return jpaRepository.findByInstitutionId(institutionId).stream().map(mapper::toDomain).toList();
+    }
+
+    @Override
     public void delete(Course course) {
         jpaRepository.findById(course.getId()).ifPresent(jpaRepository::delete);
     }

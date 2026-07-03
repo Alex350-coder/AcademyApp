@@ -17,7 +17,7 @@ public class AuditAspect {
     @Pointcut("within(@org.springframework.web.bind.annotation.RestController *)")
     public void controllerMethods() {}
 
-    @Pointcut("execution(* com.academicsaas..application.usecase.RegisterUserUseCase.execute(..)) || " +
+    @Pointcut("execution(* com.academicsaas..application.usecase.RegisterUserByDirectorUseCase.execute(..)) || " +
               "execution(* com.academicsaas..application.usecase.DeactivateUserUseCase.execute(..)) || " +
               "execution(* com.academicsaas..application.usecase.EnrollStudentUseCase.execute(..))")
     public void sensitiveOperations() {}

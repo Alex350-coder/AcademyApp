@@ -22,6 +22,7 @@ import com.academicsaas.academic.presentation.dto.StudentListDto;
 import com.academicsaas.identity.infrastructure.persistence.entity.UserJpaEntity;
 import com.academicsaas.identity.infrastructure.persistence.repository.SpringDataUserRepository;
 import com.academicsaas.shared.exception.NotFoundException;
+import com.academicsaas.shared.security.CurrentUserContext;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
@@ -52,6 +53,7 @@ public class StudentController {
     private final CourseRepository courseRepository;
     private final EvaluationRepository evaluationRepository;
     private final SpringDataEvaluationTypeRepository evaluationTypeRepository;
+    private final CurrentUserContext currentUserContext;
 
     public StudentController(StudentRepository studentRepository,
                              EnrollmentRepositoryAdapter enrollmentRepository,
@@ -63,7 +65,8 @@ public class StudentController {
                              SpringDataTeacherRepository teacherRepository,
                              CourseRepository courseRepository,
                              EvaluationRepository evaluationRepository,
-                             SpringDataEvaluationTypeRepository evaluationTypeRepository) {
+                             SpringDataEvaluationTypeRepository evaluationTypeRepository,
+                             CurrentUserContext currentUserContext) {
         this.studentRepository = studentRepository;
         this.enrollmentRepository = enrollmentRepository;
         this.sectionRepository = sectionRepository;
@@ -75,24 +78,30 @@ public class StudentController {
         this.courseRepository = courseRepository;
         this.evaluationRepository = evaluationRepository;
         this.evaluationTypeRepository = evaluationTypeRepository;
+        this.currentUserContext = currentUserContext;
     }
 
     @GetMapping
     @PreAuthorize("hasAnyRole('DIRECTOR', 'SECRETARY')")
-    public ResponseEntity<List<StudentListDto>> getAll() {
+    public ResponseEntity<List<StudentListDto>> getAll(Authentication auth) {
+        var institutionId = currentUserContext.institutionId(auth);
         var students = jpaStudentRepository.findAll();
         Map<UUID, UserJpaEntity> userCache = new HashMap<>();
-        var result = students.stream().map(s -> {
-            var user = userCache.computeIfAbsent(s.getUserId(),
-                id -> userRepository.findById(id).orElse(null));
-            return new StudentListDto(
-                s.getId(),
-                s.getEnrollmentCode(),
-                user != null ? (user.getFirstName() + " " + user.getLastName()).trim() : "Unknown",
-                user != null ? user.getEmail() : "unknown@email.com",
-                s.getGuardianName() != null ? s.getGuardianName() : "",
-                user != null ? user.getStatus() : "INACTIVE");
-        }).toList();
+        var result = students.stream()
+            .map(s -> Map.entry(s, userCache.computeIfAbsent(s.getUserId(),
+                id -> userRepository.findById(id).orElse(null))))
+            .filter(entry -> entry.getValue() != null && institutionId.equals(entry.getValue().getInstitutionId()))
+            .map(entry -> {
+                var s = entry.getKey();
+                var user = entry.getValue();
+                return new StudentListDto(
+                    s.getId(),
+                    s.getEnrollmentCode(),
+                    (user.getFirstName() + " " + user.getLastName()).trim(),
+                    user.getEmail(),
+                    s.getGuardianName() != null ? s.getGuardianName() : "",
+                    user.getStatus());
+            }).toList();
         return ResponseEntity.ok(result);
     }
 
@@ -285,9 +294,13 @@ public class StudentController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('DIRECTOR')")
-    public ResponseEntity<StudentDto> getById(@PathVariable UUID id) {
+    public ResponseEntity<StudentDto> getById(@PathVariable UUID id, Authentication auth) {
         var student = studentRepository.findById(id)
             .orElseThrow(() -> new NotFoundException("Student", id));
+        var user = userRepository.findById(student.getUserId()).orElse(null);
+        if (user == null || !currentUserContext.institutionId(auth).equals(user.getInstitutionId())) {
+            throw new NotFoundException("Student", id);
+        }
         return ResponseEntity.ok(toDto(student));
     }
 

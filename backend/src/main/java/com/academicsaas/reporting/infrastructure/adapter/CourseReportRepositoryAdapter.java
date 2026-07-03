@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -40,12 +41,17 @@ public class CourseReportRepositoryAdapter implements CourseReportRepository {
     }
 
     @Override
-    public List<CoursePerformanceData> getCoursePerformance(UUID academicPeriodId) {
+    public List<CoursePerformanceData> getCoursePerformance(UUID institutionId, UUID academicPeriodId) {
+        var ownCourseIds = courseRepository.findByInstitutionId(institutionId).stream()
+            .map(c -> c.getId())
+            .collect(Collectors.toSet());
+
         var sections = academicPeriodId != null
             ? sectionRepository.findByAcademicPeriodId(academicPeriodId)
             : sectionRepository.findAll();
 
         return sections.stream()
+            .filter(s -> ownCourseIds.contains(s.getCourseId()))
             .map(this::toCoursePerformance)
             .toList();
     }

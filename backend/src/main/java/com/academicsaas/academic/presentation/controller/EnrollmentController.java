@@ -2,7 +2,9 @@ package com.academicsaas.academic.presentation.controller;
 
 import com.academicsaas.academic.application.usecase.EnrollStudentUseCase;
 import com.academicsaas.academic.domain.model.Enrollment;
+import com.academicsaas.academic.domain.repository.CourseRepository;
 import com.academicsaas.academic.domain.repository.StudentRepository;
+import com.academicsaas.academic.infrastructure.adapter.CourseSectionRepositoryAdapter;
 import com.academicsaas.academic.infrastructure.adapter.EnrollmentRepositoryAdapter;
 import com.academicsaas.academic.presentation.dto.BulkEnrollmentRequest;
 import com.academicsaas.academic.presentation.dto.CreateEnrollmentRequest;
@@ -10,6 +12,7 @@ import com.academicsaas.academic.presentation.dto.EnrollmentDto;
 import com.academicsaas.identity.infrastructure.persistence.repository.SpringDataUserRepository;
 import com.academicsaas.shared.event.CacheInvalidationService;
 import com.academicsaas.shared.exception.NotFoundException;
+import com.academicsaas.shared.security.CurrentUserContext;
 import jakarta.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +21,7 @@ import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,22 +39,32 @@ public class EnrollmentController {
     private final StudentRepository studentRepository;
     private final SpringDataUserRepository userRepository;
     private final CacheInvalidationService cacheInvalidationService;
+    private final CourseSectionRepositoryAdapter sectionRepository;
+    private final CourseRepository courseRepository;
+    private final CurrentUserContext currentUserContext;
 
     public EnrollmentController(EnrollStudentUseCase enrollStudentUseCase,
                                 EnrollmentRepositoryAdapter enrollmentRepository,
                                 StudentRepository studentRepository,
                                 SpringDataUserRepository userRepository,
-                                CacheInvalidationService cacheInvalidationService) {
+                                CacheInvalidationService cacheInvalidationService,
+                                CourseSectionRepositoryAdapter sectionRepository,
+                                CourseRepository courseRepository,
+                                CurrentUserContext currentUserContext) {
         this.enrollStudentUseCase = enrollStudentUseCase;
         this.enrollmentRepository = enrollmentRepository;
         this.studentRepository = studentRepository;
         this.userRepository = userRepository;
         this.cacheInvalidationService = cacheInvalidationService;
+        this.sectionRepository = sectionRepository;
+        this.courseRepository = courseRepository;
+        this.currentUserContext = currentUserContext;
     }
 
     @PostMapping
     @PreAuthorize("hasAnyRole('DIRECTOR', 'SECRETARY')")
-    public ResponseEntity<Map<String, Object>> create(@Valid @RequestBody CreateEnrollmentRequest request) {
+    public ResponseEntity<Map<String, Object>> create(@Valid @RequestBody CreateEnrollmentRequest request, Authentication auth) {
+        requireSectionInOwnInstitution(request.sectionId(), auth);
         var result = enrollStudentUseCase.execute(
             new EnrollStudentUseCase.Request(request.studentId(), request.sectionId()));
         cacheInvalidationService.evictAll("institutional-overview");
@@ -60,7 +74,8 @@ public class EnrollmentController {
 
     @PostMapping("/bulk")
     @PreAuthorize("hasRole('DIRECTOR')")
-    public ResponseEntity<Map<String, Object>> createBulk(@Valid @RequestBody BulkEnrollmentRequest request) {
+    public ResponseEntity<Map<String, Object>> createBulk(@Valid @RequestBody BulkEnrollmentRequest request, Authentication auth) {
+        requireSectionInOwnInstitution(request.sectionId(), auth);
         var results = request.studentIds().stream()
             .map(sid -> {
                 try {
@@ -89,27 +104,50 @@ public class EnrollmentController {
 
     @GetMapping("/section/{sectionId}")
     @PreAuthorize("hasAnyRole('TEACHER', 'DIRECTOR', 'SECRETARY')")
-    public ResponseEntity<List<EnrollmentDto>> listBySection(@PathVariable UUID sectionId) {
+    public ResponseEntity<List<EnrollmentDto>> listBySection(@PathVariable UUID sectionId, Authentication auth) {
+        requireSectionInOwnInstitution(sectionId, auth);
         var enrollments = enrollmentRepository.findBySectionId(sectionId);
         return ResponseEntity.ok(toDtos(enrollments));
     }
 
     @GetMapping("/student/{studentId}")
     @PreAuthorize("hasAnyRole('TEACHER', 'DIRECTOR')")
-    public ResponseEntity<List<EnrollmentDto>> listByStudent(@PathVariable UUID studentId) {
+    public ResponseEntity<List<EnrollmentDto>> listByStudent(@PathVariable UUID studentId, Authentication auth) {
+        requireStudentInOwnInstitution(studentId, auth);
         var enrollments = enrollmentRepository.findByStudentId(studentId);
         return ResponseEntity.ok(toDtos(enrollments));
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('DIRECTOR')")
-    public ResponseEntity<Void> withdraw(@PathVariable UUID id) {
+    public ResponseEntity<Void> withdraw(@PathVariable UUID id, Authentication auth) {
         var enrollment = enrollmentRepository.findById(id)
             .orElseThrow(() -> new NotFoundException("Enrollment", id));
+        requireSectionInOwnInstitution(enrollment.getSectionId(), auth);
         enrollment.withdraw();
         enrollmentRepository.save(enrollment);
         cacheInvalidationService.evictAll("institutional-overview");
         return ResponseEntity.noContent().build();
+    }
+
+    // CourseSection carries no institutionId of its own - ownership is
+    // resolved transitively through its Course.
+    private void requireSectionInOwnInstitution(UUID sectionId, Authentication auth) {
+        var section = sectionRepository.findById(sectionId)
+            .orElseThrow(() -> new NotFoundException("CourseSection", sectionId));
+        var course = courseRepository.findById(section.getCourseId()).orElse(null);
+        if (course == null || !course.getInstitutionId().equals(currentUserContext.institutionId(auth))) {
+            throw new NotFoundException("CourseSection", sectionId);
+        }
+    }
+
+    private void requireStudentInOwnInstitution(UUID studentId, Authentication auth) {
+        var student = studentRepository.findById(studentId)
+            .orElseThrow(() -> new NotFoundException("Student", studentId));
+        var user = userRepository.findById(student.getUserId()).orElse(null);
+        if (user == null || !currentUserContext.institutionId(auth).equals(user.getInstitutionId())) {
+            throw new NotFoundException("Student", studentId);
+        }
     }
 
     private List<EnrollmentDto> toDtos(List<Enrollment> enrollments) {

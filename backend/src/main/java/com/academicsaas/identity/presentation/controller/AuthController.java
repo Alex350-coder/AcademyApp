@@ -3,7 +3,6 @@ package com.academicsaas.identity.presentation.controller;
 import com.academicsaas.identity.application.usecase.AuthenticateUserUseCase;
 import com.academicsaas.identity.application.usecase.RegisterInstitutionUseCase;
 import com.academicsaas.identity.application.usecase.RegisterUserByDirectorUseCase;
-import com.academicsaas.identity.application.usecase.RegisterUserUseCase;
 import com.academicsaas.identity.infrastructure.security.JwtService;
 import com.academicsaas.identity.presentation.dto.LoginRequest;
 import com.academicsaas.identity.presentation.dto.LoginResponse;
@@ -23,20 +22,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthenticateUserUseCase authenticateUserUseCase;
-    private final RegisterUserUseCase registerUserUseCase;
     private final RegisterInstitutionUseCase registerInstitutionUseCase;
     private final RegisterUserByDirectorUseCase registerUserByDirectorUseCase;
     private final JwtService jwtService;
 
     public AuthController(
         AuthenticateUserUseCase authenticateUserUseCase,
-        RegisterUserUseCase registerUserUseCase,
         RegisterInstitutionUseCase registerInstitutionUseCase,
         RegisterUserByDirectorUseCase registerUserByDirectorUseCase,
         JwtService jwtService
     ) {
         this.authenticateUserUseCase = authenticateUserUseCase;
-        this.registerUserUseCase = registerUserUseCase;
         this.registerInstitutionUseCase = registerInstitutionUseCase;
         this.registerUserByDirectorUseCase = registerUserByDirectorUseCase;
         this.jwtService = jwtService;
@@ -75,17 +71,6 @@ public class AuthController {
                 "institutionId", result.institutionId(),
                 "institutionName", result.institutionName(),
                 "institutionCode", result.institutionCode()
-            ));
-    }
-
-    @PostMapping("/register")
-    public ResponseEntity<Map<String, Object>> register(@Valid @RequestBody RegisterUserUseCase.Request request) {
-        var result = registerUserUseCase.execute(request);
-        return ResponseEntity.status(HttpStatus.CREATED)
-            .body(Map.of(
-                "userId", result.userId(),
-                "email", result.email(),
-                "fullName", result.fullName()
             ));
     }
 

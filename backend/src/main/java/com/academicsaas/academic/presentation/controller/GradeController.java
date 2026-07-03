@@ -3,12 +3,19 @@ package com.academicsaas.academic.presentation.controller;
 import com.academicsaas.academic.application.usecase.CalculateStudentAverageUseCase;
 import com.academicsaas.academic.application.usecase.RecordGradeUseCase;
 import com.academicsaas.academic.domain.model.Grade;
+import com.academicsaas.academic.domain.repository.CourseRepository;
+import com.academicsaas.academic.domain.repository.EvaluationRepository;
+import com.academicsaas.academic.domain.repository.StudentRepository;
+import com.academicsaas.academic.infrastructure.adapter.CourseSectionRepositoryAdapter;
 import com.academicsaas.academic.infrastructure.adapter.GradeRepositoryAdapter;
 import com.academicsaas.academic.infrastructure.adapter.EnrollmentRepositoryAdapter;
 import com.academicsaas.academic.presentation.dto.GradeDto;
 import com.academicsaas.academic.presentation.dto.RecordGradeRequest;
 import com.academicsaas.academic.presentation.dto.StudentGradesDto;
+import com.academicsaas.identity.infrastructure.persistence.repository.SpringDataUserRepository;
 import com.academicsaas.shared.event.CacheInvalidationService;
+import com.academicsaas.shared.exception.NotFoundException;
+import com.academicsaas.shared.security.CurrentUserContext;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Map;
@@ -34,23 +41,44 @@ public class GradeController {
     private final GradeRepositoryAdapter gradeRepository;
     private final EnrollmentRepositoryAdapter enrollmentRepository;
     private final CacheInvalidationService cacheInvalidationService;
+    private final EvaluationRepository evaluationRepository;
+    private final CourseSectionRepositoryAdapter sectionRepository;
+    private final CourseRepository courseRepository;
+    private final StudentRepository studentRepository;
+    private final SpringDataUserRepository userRepository;
+    private final CurrentUserContext currentUserContext;
 
     public GradeController(RecordGradeUseCase recordGradeUseCase,
                            CalculateStudentAverageUseCase calculateStudentAverageUseCase,
                            GradeRepositoryAdapter gradeRepository,
                            EnrollmentRepositoryAdapter enrollmentRepository,
-                           CacheInvalidationService cacheInvalidationService) {
+                           CacheInvalidationService cacheInvalidationService,
+                           EvaluationRepository evaluationRepository,
+                           CourseSectionRepositoryAdapter sectionRepository,
+                           CourseRepository courseRepository,
+                           StudentRepository studentRepository,
+                           SpringDataUserRepository userRepository,
+                           CurrentUserContext currentUserContext) {
         this.recordGradeUseCase = recordGradeUseCase;
         this.calculateStudentAverageUseCase = calculateStudentAverageUseCase;
         this.gradeRepository = gradeRepository;
         this.enrollmentRepository = enrollmentRepository;
         this.cacheInvalidationService = cacheInvalidationService;
+        this.evaluationRepository = evaluationRepository;
+        this.sectionRepository = sectionRepository;
+        this.courseRepository = courseRepository;
+        this.studentRepository = studentRepository;
+        this.userRepository = userRepository;
+        this.currentUserContext = currentUserContext;
     }
 
     @PostMapping
     @PreAuthorize("hasAnyRole('TEACHER', 'DIRECTOR')")
     public ResponseEntity<Map<String, Object>> record(@Valid @RequestBody RecordGradeRequest request,
                                                       Authentication auth) {
+        var evaluation = evaluationRepository.findById(request.evaluationId())
+            .orElseThrow(() -> new NotFoundException("Evaluation", request.evaluationId()));
+        requireSectionInOwnInstitution(evaluation.getSectionId(), auth);
         var userId = UUID.fromString(auth.getName());
         var result = recordGradeUseCase.execute(
             new RecordGradeUseCase.Request(
@@ -65,7 +93,14 @@ public class GradeController {
     @PreAuthorize("hasAnyRole('TEACHER', 'DIRECTOR')")
     public ResponseEntity<List<StudentGradesDto>> getByStudent(
             @PathVariable UUID studentId,
-            @RequestParam(required = false) UUID sectionId) {
+            @RequestParam(required = false) UUID sectionId,
+            Authentication auth) {
+        var student = studentRepository.findById(studentId)
+            .orElseThrow(() -> new NotFoundException("Student", studentId));
+        var studentUser = userRepository.findById(student.getUserId()).orElse(null);
+        if (studentUser == null || !currentUserContext.institutionId(auth).equals(studentUser.getInstitutionId())) {
+            throw new NotFoundException("Student", studentId);
+        }
         if (sectionId != null) {
             var avg = calculateStudentAverageUseCase.execute(
                 new CalculateStudentAverageUseCase.Request(studentId, sectionId));
@@ -98,5 +133,16 @@ public class GradeController {
             g.getScore().value(), g.getScore().maxScore(),
             g.getComments(), g.getGradedBy(), g.getGradedAt(),
             g.getCreatedAt(), g.getUpdatedAt());
+    }
+
+    // CourseSection carries no institutionId of its own - ownership is
+    // resolved transitively through its Course.
+    private void requireSectionInOwnInstitution(UUID sectionId, Authentication auth) {
+        var section = sectionRepository.findById(sectionId)
+            .orElseThrow(() -> new NotFoundException("CourseSection", sectionId));
+        var course = courseRepository.findById(section.getCourseId()).orElse(null);
+        if (course == null || !course.getInstitutionId().equals(currentUserContext.institutionId(auth))) {
+            throw new NotFoundException("CourseSection", sectionId);
+        }
     }
 }

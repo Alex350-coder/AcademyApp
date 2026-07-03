@@ -9,5 +9,6 @@ public interface CourseRepository {
     Course save(Course course);
     Optional<Course> findById(UUID id);
     List<Course> findAll();
+    List<Course> findByInstitutionId(UUID institutionId);
     void delete(Course course);
 }

@@ -1,5 +1,7 @@
 package com.academicsaas.academic.application.usecase;
 
+import com.academicsaas.academic.domain.repository.CourseRepository;
+import com.academicsaas.academic.domain.repository.CourseSectionRepository;
 import com.academicsaas.academic.domain.repository.EnrollmentRepository;
 import com.academicsaas.academic.domain.repository.GradeRepository;
 import com.academicsaas.academic.domain.service.AverageCalculator;
@@ -13,13 +15,19 @@ public class DetectAtRiskStudentsUseCase {
 
     private final EnrollmentRepository enrollmentRepository;
     private final GradeRepository gradeRepository;
+    private final CourseSectionRepository sectionRepository;
+    private final CourseRepository courseRepository;
     private final AverageCalculator averageCalculator;
 
     public DetectAtRiskStudentsUseCase(
             EnrollmentRepository enrollmentRepository,
-            GradeRepository gradeRepository) {
+            GradeRepository gradeRepository,
+            CourseSectionRepository sectionRepository,
+            CourseRepository courseRepository) {
         this.enrollmentRepository = enrollmentRepository;
         this.gradeRepository = gradeRepository;
+        this.sectionRepository = sectionRepository;
+        this.courseRepository = courseRepository;
         this.averageCalculator = new AverageCalculator();
     }
 
@@ -31,7 +39,7 @@ public class DetectAtRiskStudentsUseCase {
         String sectionName
     ) {}
 
-    public record Request(UUID academicPeriodId, BigDecimal passingThreshold, String riskType) {}
+    public record Request(UUID institutionId, UUID academicPeriodId, BigDecimal passingThreshold, String riskType) {}
 
     public List<AtRiskStudent> execute(Request request) {
         var threshold = request.passingThreshold() != null ? request.passingThreshold() : BigDecimal.valueOf(60);
@@ -41,6 +49,15 @@ public class DetectAtRiskStudentsUseCase {
         var atRisk = new java.util.ArrayList<AtRiskStudent>();
 
         for (var enrollment : enrollments) {
+            var section = sectionRepository.findById(enrollment.getSectionId()).orElse(null);
+            if (section == null) {
+                continue;
+            }
+            var course = courseRepository.findById(section.getCourseId()).orElse(null);
+            if (course == null || !request.institutionId().equals(course.getInstitutionId())) {
+                continue;
+            }
+
             var grades = gradeRepository.findByStudentIdAndSectionId(
                 enrollment.getStudentId(), enrollment.getSectionId());
 

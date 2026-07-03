@@ -48,8 +48,8 @@ public class LocalFileStorage implements FileStorage {
 
     @Override
     public Optional<String> getUrl(String fileId) {
-        var filePath = storagePath.resolve(fileId);
-        if (Files.exists(filePath)) {
+        var filePath = resolveWithinStorage(fileId);
+        if (filePath.isPresent() && Files.exists(filePath.get())) {
             return Optional.of("/api/v1/files/" + fileId);
         }
         return Optional.empty();
@@ -57,11 +57,26 @@ public class LocalFileStorage implements FileStorage {
 
     @Override
     public void delete(String fileId) {
+        var filePath = resolveWithinStorage(fileId);
+        if (filePath.isEmpty()) {
+            log.warn("Refused to delete file with path-traversing id: {}", fileId);
+            return;
+        }
         try {
-            Files.deleteIfExists(storagePath.resolve(fileId));
+            Files.deleteIfExists(filePath.get());
             log.info("File deleted: {}", fileId);
         } catch (IOException e) {
             log.error("Failed to delete file: {}", fileId, e);
         }
+    }
+
+    // Resolves fileId against the storage root and rejects the result if it
+    // escapes that root (path traversal via "../" or an absolute fileId).
+    private Optional<Path> resolveWithinStorage(String fileId) {
+        var resolved = storagePath.resolve(fileId).normalize();
+        if (!resolved.startsWith(storagePath)) {
+            return Optional.empty();
+        }
+        return Optional.of(resolved);
     }
 }

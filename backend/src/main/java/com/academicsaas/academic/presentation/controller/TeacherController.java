@@ -10,6 +10,7 @@ import com.academicsaas.academic.presentation.dto.TeacherListDto;
 import com.academicsaas.identity.infrastructure.persistence.entity.UserJpaEntity;
 import com.academicsaas.identity.infrastructure.persistence.repository.SpringDataUserRepository;
 import com.academicsaas.shared.exception.NotFoundException;
+import com.academicsaas.shared.security.CurrentUserContext;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,33 +30,41 @@ public class TeacherController {
     private final CourseSectionRepositoryAdapter sectionRepository;
     private final SpringDataUserRepository userRepository;
     private final CourseRepository courseRepository;
+    private final CurrentUserContext currentUserContext;
 
     public TeacherController(SpringDataTeacherRepository teacherRepository,
                              CourseSectionRepositoryAdapter sectionRepository,
                              SpringDataUserRepository userRepository,
-                             CourseRepository courseRepository) {
+                             CourseRepository courseRepository,
+                             CurrentUserContext currentUserContext) {
         this.teacherRepository = teacherRepository;
         this.sectionRepository = sectionRepository;
         this.userRepository = userRepository;
         this.courseRepository = courseRepository;
+        this.currentUserContext = currentUserContext;
     }
 
     @GetMapping
     @PreAuthorize("hasRole('DIRECTOR')")
-    public ResponseEntity<List<TeacherListDto>> getAll() {
+    public ResponseEntity<List<TeacherListDto>> getAll(Authentication auth) {
+        var institutionId = currentUserContext.institutionId(auth);
         var teachers = teacherRepository.findAll();
         Map<UUID, UserJpaEntity> userCache = new HashMap<>();
-        var result = teachers.stream().map(t -> {
-            var user = userCache.computeIfAbsent(t.getUserId(),
-                id -> userRepository.findById(id).orElse(null));
-            return new TeacherListDto(
-                t.getId(),
-                user != null ? (user.getFirstName() + " " + user.getLastName()).trim() : "Unknown",
-                user != null ? user.getEmail() : "unknown@email.com",
-                t.getSpecialty() != null ? t.getSpecialty() : "",
-                t.getHireDate(),
-                user != null ? user.getStatus() : "INACTIVE");
-        }).toList();
+        var result = teachers.stream()
+            .map(t -> Map.entry(t, userCache.computeIfAbsent(t.getUserId(),
+                id -> userRepository.findById(id).orElse(null))))
+            .filter(entry -> entry.getValue() != null && institutionId.equals(entry.getValue().getInstitutionId()))
+            .map(entry -> {
+                var t = entry.getKey();
+                var user = entry.getValue();
+                return new TeacherListDto(
+                    t.getId(),
+                    (user.getFirstName() + " " + user.getLastName()).trim(),
+                    user.getEmail(),
+                    t.getSpecialty() != null ? t.getSpecialty() : "",
+                    t.getHireDate(),
+                    user.getStatus());
+            }).toList();
         return ResponseEntity.ok(result);
     }
 

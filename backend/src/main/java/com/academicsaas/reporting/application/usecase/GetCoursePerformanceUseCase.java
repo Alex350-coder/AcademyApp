@@ -12,7 +12,7 @@ public class GetCoursePerformanceUseCase {
     public GetCoursePerformanceUseCase(CourseReportRepository courseReportRepository) {
         this.courseReportRepository = courseReportRepository;
     }
-    public List<CoursePerformanceData> execute(UUID academicPeriodId) {
-        return courseReportRepository.getCoursePerformance(academicPeriodId);
+    public List<CoursePerformanceData> execute(UUID institutionId, UUID academicPeriodId) {
+        return courseReportRepository.getCoursePerformance(institutionId, academicPeriodId);
     }
 }

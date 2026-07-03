@@ -51,7 +51,6 @@ public class SecurityConfig {
                 .requestMatchers("/api/v1/auth/login", "/api/v1/auth/refresh").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/v1/auth/register-institution").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/v1/institutions").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/v1/auth/register").hasRole("DIRECTOR")
                 .requestMatchers(HttpMethod.POST, "/api/v1/auth/register-user").hasRole("DIRECTOR")
                 .requestMatchers("/swagger-ui/**", "/api-docs/**").permitAll()
                 .requestMatchers("/actuator/health").permitAll()

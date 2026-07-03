@@ -13,7 +13,7 @@ public class GetAttendanceTrendUseCase {
     public GetAttendanceTrendUseCase(AttendanceReportRepository attendanceReportRepository) {
         this.attendanceReportRepository = attendanceReportRepository;
     }
-    public List<AttendanceTrendData> execute(UUID academicPeriodId, LocalDate from, LocalDate to) {
-        return attendanceReportRepository.getAttendanceTrend(academicPeriodId, from, to);
+    public List<AttendanceTrendData> execute(UUID institutionId, UUID academicPeriodId, LocalDate from, LocalDate to) {
+        return attendanceReportRepository.getAttendanceTrend(institutionId, academicPeriodId, from, to);
     }
 }
