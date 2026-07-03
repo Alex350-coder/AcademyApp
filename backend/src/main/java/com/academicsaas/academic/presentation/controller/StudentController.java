@@ -1,19 +1,23 @@
 package com.academicsaas.academic.presentation.controller;
 
+import com.academicsaas.academic.domain.model.Course;
 import com.academicsaas.academic.domain.model.Student;
 import com.academicsaas.academic.domain.model.valueobject.AttendanceStatus;
 import com.academicsaas.academic.domain.repository.CourseRepository;
+import com.academicsaas.academic.domain.repository.EvaluationRepository;
 import com.academicsaas.academic.domain.repository.StudentRepository;
 import com.academicsaas.academic.infrastructure.adapter.AttendanceRepositoryAdapter;
 import com.academicsaas.academic.infrastructure.adapter.CourseSectionRepositoryAdapter;
 import com.academicsaas.academic.infrastructure.adapter.EnrollmentRepositoryAdapter;
 import com.academicsaas.academic.infrastructure.adapter.GradeRepositoryAdapter;
+import com.academicsaas.academic.infrastructure.entity.EvaluationTypeJpaEntity;
+import com.academicsaas.academic.infrastructure.repository.SpringDataEvaluationTypeRepository;
 import com.academicsaas.academic.infrastructure.repository.SpringDataStudentRepository;
 import com.academicsaas.academic.infrastructure.repository.SpringDataTeacherRepository;
-import com.academicsaas.academic.presentation.dto.AttendanceDto;
-import com.academicsaas.academic.presentation.dto.SectionDto;
+import com.academicsaas.academic.presentation.dto.StudentAttendanceSummaryDto;
+import com.academicsaas.academic.presentation.dto.StudentCourseGradesDto;
 import com.academicsaas.academic.presentation.dto.StudentDto;
-import com.academicsaas.academic.presentation.dto.StudentGradesDto;
+import com.academicsaas.academic.presentation.dto.StudentEvaluationDto;
 import com.academicsaas.academic.presentation.dto.StudentListDto;
 import com.academicsaas.identity.infrastructure.persistence.entity.UserJpaEntity;
 import com.academicsaas.identity.infrastructure.persistence.repository.SpringDataUserRepository;
@@ -23,6 +27,7 @@ import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -45,6 +50,8 @@ public class StudentController {
     private final SpringDataUserRepository userRepository;
     private final SpringDataTeacherRepository teacherRepository;
     private final CourseRepository courseRepository;
+    private final EvaluationRepository evaluationRepository;
+    private final SpringDataEvaluationTypeRepository evaluationTypeRepository;
 
     public StudentController(StudentRepository studentRepository,
                              EnrollmentRepositoryAdapter enrollmentRepository,
@@ -54,7 +61,9 @@ public class StudentController {
                              SpringDataStudentRepository jpaStudentRepository,
                              SpringDataUserRepository userRepository,
                              SpringDataTeacherRepository teacherRepository,
-                             CourseRepository courseRepository) {
+                             CourseRepository courseRepository,
+                             EvaluationRepository evaluationRepository,
+                             SpringDataEvaluationTypeRepository evaluationTypeRepository) {
         this.studentRepository = studentRepository;
         this.enrollmentRepository = enrollmentRepository;
         this.sectionRepository = sectionRepository;
@@ -64,6 +73,8 @@ public class StudentController {
         this.userRepository = userRepository;
         this.teacherRepository = teacherRepository;
         this.courseRepository = courseRepository;
+        this.evaluationRepository = evaluationRepository;
+        this.evaluationTypeRepository = evaluationTypeRepository;
     }
 
     @GetMapping
@@ -123,81 +134,138 @@ public class StudentController {
     }
 
     @GetMapping("/me/courses")
-    public ResponseEntity<List<SectionDto>> getMyCourses(Authentication auth) {
+    public ResponseEntity<List<StudentCourseGradesDto>> getMyCourses(Authentication auth) {
+        var userId = UUID.fromString(auth.getName());
+        var student = studentRepository.findByUserId(userId)
+            .orElseThrow(() -> new NotFoundException("Student profile for user", userId));
+        return ResponseEntity.ok(buildCourseGradesList(student));
+    }
+
+    @GetMapping("/me/grades")
+    public ResponseEntity<List<StudentCourseGradesDto>> getMyGrades(Authentication auth) {
+        var userId = UUID.fromString(auth.getName());
+        var student = studentRepository.findByUserId(userId)
+            .orElseThrow(() -> new NotFoundException("Student profile for user", userId));
+        return ResponseEntity.ok(buildCourseGradesList(student));
+    }
+
+    private List<StudentCourseGradesDto> buildCourseGradesList(Student student) {
+        var enrollments = enrollmentRepository.findByStudentId(student.getId());
+        Map<UUID, String> courseNameCache = new HashMap<>();
+        Map<UUID, String> courseCodeCache = new HashMap<>();
+        Map<UUID, String> teacherNameCache = new HashMap<>();
+        Map<UUID, String> evaluationTypeNameCache = new HashMap<>();
+
+        return enrollments.stream()
+            .map(e -> sectionRepository.findById(e.getSectionId()))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .map(section -> {
+                var courseName = courseNameCache.computeIfAbsent(section.getCourseId(),
+                    id -> courseRepository.findById(id).map(Course::getName).orElse("Unknown"));
+                var courseCode = courseCodeCache.computeIfAbsent(section.getCourseId(),
+                    id -> courseRepository.findById(id).map(Course::getCode).orElse(""));
+                var teacherName = teacherNameCache.computeIfAbsent(section.getTeacherId(),
+                    id -> teacherRepository.findById(id)
+                        .flatMap(t -> userRepository.findById(t.getUserId()))
+                        .map(u -> (u.getFirstName() + " " + u.getLastName()).trim())
+                        .orElse("Unknown"));
+
+                var grades = gradeRepository.findByStudentIdAndSectionId(student.getId(), section.getId());
+                var evaluations = grades.stream()
+                    .map(g -> {
+                        var evaluation = evaluationRepository.findById(g.getEvaluationId()).orElse(null);
+                        var typeName = evaluation == null
+                            ? ""
+                            : evaluationTypeNameCache.computeIfAbsent(evaluation.getEvaluationTypeId(),
+                                id -> evaluationTypeRepository.findById(id)
+                                    .map(EvaluationTypeJpaEntity::getName).orElse(""));
+                        return new StudentEvaluationDto(
+                            g.getId(),
+                            evaluation != null ? evaluation.getName() : "Evaluation",
+                            g.getScore().value(), g.getScore().maxScore(),
+                            evaluation != null ? evaluation.getDate() : null,
+                            typeName);
+                    })
+                    .toList();
+
+                var average = grades.isEmpty()
+                    ? BigDecimal.ZERO
+                    : grades.stream().map(g -> g.getScore().percentage())
+                        .reduce(BigDecimal.ZERO, BigDecimal::add)
+                        .divide(BigDecimal.valueOf(grades.size()), 2, RoundingMode.HALF_UP);
+
+                return new StudentCourseGradesDto(
+                    section.getId(), courseName, courseCode, teacherName, average, evaluations);
+            })
+            .toList();
+    }
+
+    @GetMapping("/me/attendance")
+    public ResponseEntity<List<StudentAttendanceSummaryDto>> getMyAttendance(Authentication auth) {
         var userId = UUID.fromString(auth.getName());
         var student = studentRepository.findByUserId(userId)
             .orElseThrow(() -> new NotFoundException("Student profile for user", userId));
         var enrollments = enrollmentRepository.findByStudentId(student.getId());
         Map<UUID, String> courseNameCache = new HashMap<>();
-        Map<UUID, String> teacherNameCache = new HashMap<>();
-        var sections = enrollments.stream()
-            .map(e -> sectionRepository.findById(e.getSectionId()))
-            .filter(opt -> opt.isPresent())
-            .map(opt -> {
-                var section = opt.get();
-                var courseName = courseNameCache.computeIfAbsent(section.getCourseId(),
-                    id -> courseRepository.findById(id).map(c -> c.getName()).orElse(null));
-                var teacherName = teacherNameCache.computeIfAbsent(section.getTeacherId(),
-                    id -> teacherRepository.findById(id)
-                        .flatMap(t -> userRepository.findById(t.getUserId()))
-                        .map(u -> (u.getFirstName() + " " + u.getLastName()).trim())
-                        .orElse(null));
-                return new SectionDto(
-                    section.getId(), section.getCourseId(), section.getAcademicPeriodId(),
-                    section.getTeacherId(), section.getClassroomId(),
-                    section.getName(), section.getCapacity(), section.getEnrolledCount(),
-                    courseName, teacherName,
-                    section.getCreatedAt(), section.getUpdatedAt());
-            })
-            .toList();
-        return ResponseEntity.ok(sections);
-    }
 
-    @GetMapping("/me/grades")
-    public ResponseEntity<List<StudentGradesDto>> getMyGrades(Authentication auth) {
-        var userId = UUID.fromString(auth.getName());
-        var student = studentRepository.findByUserId(userId)
-            .orElseThrow(() -> new NotFoundException("Student profile for user", userId));
-        var enrollments = enrollmentRepository.findByStudentId(student.getId());
         var result = enrollments.stream()
-            .map(e -> {
-                var secId = e.getSectionId();
-                var grades = gradeRepository.findByStudentIdAndSectionId(student.getId(), secId);
-                return new StudentGradesDto(
-                    student.getId(), secId, "Section-" + secId.toString().substring(0, 8),
-                    null,
-                    grades.stream().map(g -> new com.academicsaas.academic.presentation.dto.GradeDto(
-                        g.getId(), g.getEvaluationId(), g.getStudentId(),
-                        g.getScore().value(), g.getScore().maxScore(),
-                        g.getComments(), g.getGradedBy(), g.getGradedAt(),
-                        g.getCreatedAt(), g.getUpdatedAt())).toList());
-            })
+            .map(e -> sectionRepository.findById(e.getSectionId())
+                .map(section -> {
+                    var courseName = courseNameCache.computeIfAbsent(section.getCourseId(),
+                        id -> courseRepository.findById(id).map(Course::getName).orElse("Unknown"));
+                    var records = attendanceRepository.findByEnrollmentIds(List.of(e.getId()));
+                    var total = records.size();
+                    var present = records.stream()
+                        .filter(a -> a.getStatus() == AttendanceStatus.PRESENT || a.getStatus() == AttendanceStatus.LATE)
+                        .count();
+                    var percentage = total == 0
+                        ? BigDecimal.ZERO
+                        : BigDecimal.valueOf(present).multiply(BigDecimal.valueOf(100))
+                            .divide(BigDecimal.valueOf(total), 2, RoundingMode.HALF_UP);
+                    return new StudentAttendanceSummaryDto(section.getId(), courseName, present, total, percentage);
+                }))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
             .toList();
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/me/attendance")
-    public ResponseEntity<List<AttendanceDto>> getMyAttendance(Authentication auth) {
+    @GetMapping("/me/schedule")
+    public ResponseEntity<List<Map<String, Object>>> getMySchedule(Authentication auth) {
         var userId = UUID.fromString(auth.getName());
         var student = studentRepository.findByUserId(userId)
             .orElseThrow(() -> new NotFoundException("Student profile for user", userId));
-        var studentUser = userRepository.findById(student.getUserId()).orElse(null);
-        var studentName = studentUser != null
-            ? (studentUser.getFirstName() + " " + studentUser.getLastName()).trim()
-            : null;
         var enrollments = enrollmentRepository.findByStudentId(student.getId());
-        var enrollmentIds = enrollments.stream().map(e -> e.getId()).toList();
-        var records = attendanceRepository.findByEnrollmentIds(enrollmentIds);
-        return ResponseEntity.ok(records.stream()
-            .map(a -> new AttendanceDto(a.getId(), a.getEnrollmentId(), student.getId(), studentName, a.getDate(),
-                a.getStatus().name(), a.getJustification(),
-                a.getCreatedAt(), a.getUpdatedAt()))
-            .toList());
-    }
+        Map<UUID, String> courseNameCache = new HashMap<>();
+        Map<UUID, String> courseCodeCache = new HashMap<>();
+        Map<UUID, String> teacherNameCache = new HashMap<>();
 
-    @GetMapping("/me/schedule")
-    public ResponseEntity<List<SectionDto>> getMySchedule(Authentication auth) {
-        return getMyCourses(auth);
+        // No timetable feature exists yet (CourseSection has no day/time/room
+        // fields) - entries intentionally omit dayOfWeek/startTime/endTime/
+        // classroom, and the frontend treats that as "not scheduled yet".
+        var result = enrollments.stream()
+            .map(e -> sectionRepository.findById(e.getSectionId()))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .map(section -> {
+                var courseName = courseNameCache.computeIfAbsent(section.getCourseId(),
+                    id -> courseRepository.findById(id).map(Course::getName).orElse("Unknown"));
+                var courseCode = courseCodeCache.computeIfAbsent(section.getCourseId(),
+                    id -> courseRepository.findById(id).map(Course::getCode).orElse(""));
+                var teacherName = teacherNameCache.computeIfAbsent(section.getTeacherId(),
+                    id -> teacherRepository.findById(id)
+                        .flatMap(t -> userRepository.findById(t.getUserId()))
+                        .map(u -> (u.getFirstName() + " " + u.getLastName()).trim())
+                        .orElse("Unknown"));
+                return Map.<String, Object>of(
+                    "id", section.getId(),
+                    "courseName", courseName,
+                    "courseCode", courseCode,
+                    "teacherName", teacherName);
+            })
+            .toList();
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/me/observations")
