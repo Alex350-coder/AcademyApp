@@ -1,5 +1,6 @@
 ### Java / Maven ###
 backend/target/
+backend/uploads/
 *.class
 *.jar
 *.war
@@ -7,6 +8,9 @@ backend/target/
 ### Frontend ###
 frontend/node_modules/
 frontend/dist/
+frontend/coverage/
+frontend/playwright-report/
+frontend/test-results/
 frontend/.env.local
 frontend/.env.*.local
 
