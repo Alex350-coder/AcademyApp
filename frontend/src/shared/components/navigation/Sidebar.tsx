@@ -76,8 +76,8 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
         className={({ isActive }) =>
           `flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-all duration-150 ${
             isActive
-              ? 'bg-[#1e3a5f] text-white font-medium border-l-[3px] border-[#3b82f6] rounded-l-none'
-              : 'text-[#94a3b8] hover:text-[#f1f5f9] hover:bg-[#1a2744]'
+              ? 'bg-white/15 text-white font-medium border-l-[3px] border-white rounded-l-none'
+              : 'text-white/60 hover:text-white hover:bg-white/10'
           } ${collapsed ? 'justify-center' : ''}`
         }
         title={collapsed ? label : undefined}
@@ -94,17 +94,17 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
 
   return (
     <aside
-      className={`fixed left-0 top-0 h-full bg-[#111827] border-r border-[#1e3048] transition-all duration-200 z-30 ${
+      className={`fixed left-0 top-0 h-full bg-primary border-r border-white/10 transition-all duration-200 z-30 ${
         collapsed ? 'w-16' : 'w-64'
       }`}
     >
-      <div className="flex items-center justify-between p-4 border-b border-[#1e3048]">
+      <div className="flex items-center justify-between p-4 border-b border-white/10">
         {!collapsed && (
-          <span className="font-semibold text-[#f1f5f9]">Academic SaaS</span>
+          <span className="font-semibold text-white">Academic SaaS</span>
         )}
         <button
           onClick={onToggle}
-          className="p-1.5 rounded-md hover:bg-[#1a2744] text-[#94a3b8] transition-colors"
+          className="p-1.5 rounded-md hover:bg-white/10 text-white/60 transition-colors"
           aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
           {collapsed ? '→' : '←'}
@@ -116,18 +116,15 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
         {visibleItems.map((item) => renderNavLink(item.label, item.path))}
       </nav>
 
-      <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-[#1e3048]">
+      <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-white/10">
         {!collapsed && user && (
           <div className="flex items-center gap-3 mb-3">
-            <div
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-bold"
-              style={{ backgroundColor: '#3b82f620', color: '#3b82f6' }}
-            >
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/15 text-white text-xs font-bold">
               {getInitials(user.fullName)}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium text-[#f1f5f9] truncate">{user.fullName}</p>
-              <p className="text-xs text-[#94a3b8] truncate">{user.roles.join(', ')}</p>
+              <p className="text-sm font-medium text-white truncate">{user.fullName}</p>
+              <p className="text-xs text-white/60 truncate">{user.roles.join(', ')}</p>
             </div>
           </div>
         )}
@@ -135,7 +132,7 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
           {collapsed ? (
             <button
               onClick={logout}
-              className="flex items-center justify-center w-full p-2 rounded-md text-[#94a3b8] hover:text-[#ef4444] hover:bg-[#ef4444]/10 transition-colors"
+              className="flex items-center justify-center w-full p-2 rounded-md text-white/60 hover:text-danger hover:bg-danger/10 transition-colors"
               title="Sign Out"
             >
               <LogOut className="h-4 w-4" />

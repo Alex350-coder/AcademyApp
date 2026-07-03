@@ -27,43 +27,44 @@ export function AttendanceTrendChart() {
       </CardHeader>
       <CardContent>
         {isLoading ? (
-          <div className="h-64 bg-[#1e2a3a] rounded animate-pulse" />
+          <div className="h-64 bg-surface-hover rounded animate-pulse" />
         ) : chartData.length > 0 ? (
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={chartData} margin={{ top: 8, right: 8, bottom: 8, left: -16 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1e3048" />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
                 <XAxis
                   dataKey="date"
-                  tick={{ fontSize: 11, fill: '#94a3b8' }}
-                  axisLine={{ stroke: '#1e3048' }}
+                  tick={{ fontSize: 11, fill: 'var(--color-muted)' }}
+                  axisLine={{ stroke: 'var(--color-border)' }}
                   tickLine={false}
                   interval="preserveStartEnd"
                 />
                 <YAxis
                   domain={[0, 100]}
-                  tick={{ fontSize: 11, fill: '#94a3b8' }}
-                  axisLine={{ stroke: '#1e3048' }}
+                  tick={{ fontSize: 11, fill: 'var(--color-muted)' }}
+                  axisLine={{ stroke: 'var(--color-border)' }}
                   tickLine={false}
                   tickFormatter={(v: number) => `${v}%`}
                 />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#1a2332',
-                    border: '1px solid #1e3048',
+                    backgroundColor: 'var(--color-surface)',
+                    border: '1px solid var(--color-border)',
                     borderRadius: '6px',
-                    color: '#f1f5f9',
+                    color: 'var(--color-text)',
                     fontSize: '12px',
+                    boxShadow: 'var(--shadow-elevation-2)',
                   }}
                   formatter={(value) => [`${Number(value).toFixed(1)}%`, 'Attendance']}
                 />
                 <Line
                   type="monotone"
                   dataKey="rate"
-                  stroke="#3b82f6"
+                  stroke="var(--color-primary)"
                   strokeWidth={2}
-                  dot={{ fill: '#3b82f6', r: 3, strokeWidth: 0 }}
-                  activeDot={{ r: 5, fill: '#3b82f6', stroke: '#f1f5f9', strokeWidth: 2 }}
+                  dot={{ fill: 'var(--color-primary)', r: 3, strokeWidth: 0 }}
+                  activeDot={{ r: 5, fill: 'var(--color-primary)', stroke: '#ffffff', strokeWidth: 2 }}
                 />
               </LineChart>
             </ResponsiveContainer>

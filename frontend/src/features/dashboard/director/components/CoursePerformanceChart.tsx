@@ -10,11 +10,11 @@ const ITEM_HEIGHT = 52;
 const GAP = 16;
 
 function getBarColor(score: number): string {
-  if (score === 0) return '#374151';
-  if (score >= 80) return '#22c55e';
-  if (score >= 60) return '#eab308';
-  if (score >= 40) return '#f97316';
-  return '#ef4444';
+  if (score === 0) return 'var(--color-muted)';
+  if (score >= 80) return 'var(--color-success)';
+  if (score >= 60) return 'var(--color-warning)';
+  if (score >= 40) return '#f97316'; // intermediate severity tier, no matching token
+  return 'var(--color-danger)';
 }
 
 export function CoursePerformanceChart() {
@@ -68,8 +68,8 @@ export function CoursePerformanceChart() {
           <div className="space-y-4 animate-pulse flex-1">
             {Array.from({ length: 4 }).map((_, i) => (
               <div key={i} className="space-y-1">
-                <div className="h-4 w-32 bg-[#1e2a3a] rounded" />
-                <div className="h-6 bg-[#1e2a3a] rounded" />
+                <div className="h-4 w-32 bg-surface-hover rounded" />
+                <div className="h-6 bg-surface-hover rounded" />
               </div>
             ))}
           </div>
@@ -84,21 +84,21 @@ export function CoursePerformanceChart() {
                     <div key={course.courseId}>
                       <div className="flex items-center justify-between mb-1">
                         <div className="min-w-0 flex-1">
-                          <p className="text-sm font-medium text-[#f1f5f9] truncate">
+                          <p className="text-sm font-medium text-text truncate">
                             {course.courseName}
                           </p>
-                          <p className="text-xs text-[#94a3b8]">
+                          <p className="text-xs text-muted">
                             {course.courseCode} &middot; {course.enrolledStudents} enrolled &middot; {course.attendanceRate.toFixed(0)}% attendance
                           </p>
                         </div>
                         <span
                           className="text-sm font-semibold ml-3"
-                          style={{ color: course.averageScore === 0 ? '#94a3b8' : barColor }}
+                          style={{ color: course.averageScore === 0 ? 'var(--color-muted)' : barColor }}
                         >
                           {course.averageScore === 0 ? 'Sin datos' : `${course.averageScore.toFixed(1)}%`}
                         </span>
                       </div>
-                      <div className="w-full h-3 bg-[#1e2a3a] rounded-full overflow-hidden">
+                      <div className="w-full h-3 bg-surface-hover rounded-full overflow-hidden">
                         <motion.div
                           className="h-full rounded-full"
                           style={{ backgroundColor: barColor }}
@@ -114,8 +114,8 @@ export function CoursePerformanceChart() {
             </div>
 
             {totalPages > 1 && (
-              <div className="flex items-center justify-between pt-3 mt-3 border-t border-[#1e3048]">
-                <span className="text-xs text-[#94a3b8]">
+              <div className="flex items-center justify-between pt-3 mt-3 border-t border-border">
+                <span className="text-xs text-muted">
                   {(currentPage - 1) * itemsPerPage + 1}–
                   {Math.min(currentPage * itemsPerPage, courses.length)} of {courses.length}
                 </span>
@@ -123,17 +123,17 @@ export function CoursePerformanceChart() {
                   <button
                     onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                     disabled={currentPage === 1}
-                    className="p-1 rounded hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-colors text-[#94a3b8]"
+                    className="p-1 rounded hover:bg-surface-hover disabled:opacity-30 disabled:cursor-not-allowed transition-colors text-muted"
                   >
                     <ChevronLeft size={16} />
                   </button>
-                  <span className="text-xs text-[#94a3b8] px-2">
+                  <span className="text-xs text-muted px-2">
                     {currentPage} / {totalPages}
                   </span>
                   <button
                     onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                     disabled={currentPage === totalPages}
-                    className="p-1 rounded hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-colors text-[#94a3b8]"
+                    className="p-1 rounded hover:bg-surface-hover disabled:opacity-30 disabled:cursor-not-allowed transition-colors text-muted"
                   >
                     <ChevronRight size={16} />
                   </button>

@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import { ThemeToggle } from '@/shared/components/ThemeToggle';
 
 interface AuthNavbarProps {
   backTo?: string;
@@ -18,7 +17,6 @@ export function AuthNavbar({ backTo = '/' }: AuthNavbarProps) {
         </svg>
         Volver
       </Link>
-      <ThemeToggle />
     </nav>
   );
 }

@@ -13,22 +13,24 @@ interface ClickPowerUpProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   tapDuration?: number;
 }
 
+// Literal hex (not CSS vars) to match the current token values - Framer Motion needs
+// concrete colors to interpolate smoothly between animation states.
 const variantClasses: Record<PowerUpVariant, { corner: string; pattern: string; arm: string; textRest: string; textHover: string; textTap: string }> = {
   primary: {
-    corner: "rgb(38 38 38)",
-    pattern: "var(--color-neutral-200)",
-    arm: "#171717",
-    textRest: "var(--color-foreground)",
+    corner: "#0F172A",
+    pattern: "#E2E8F0",
+    arm: "#0F172A",
+    textRest: "#0F172A",
     textHover: "#ffffff",
-    textTap: "#0a2926",
+    textTap: "#ffffff",
   },
   secondary: {
-    corner: "rgb(38 38 38)",
-    pattern: "var(--color-neutral-200)",
-    arm: "#171717",
-    textRest: "var(--color-foreground)",
+    corner: "#0F172A",
+    pattern: "#E2E8F0",
+    arm: "#0F172A",
+    textRest: "#0F172A",
     textHover: "#ffffff",
-    textTap: "#0a2926",
+    textTap: "#ffffff",
   },
 };
 
@@ -66,7 +68,7 @@ export function ClickPowerUp({
       onTap={handleTap}
       className={cn(
         "relative inline-block cursor-pointer",
-        "[--pattern:var(--color-neutral-200)] dark:[--pattern:var(--color-neutral-900)]",
+        "[--pattern:var(--color-border)]",
         disabled && "opacity-50 cursor-not-allowed pointer-events-none",
       )}
     >
@@ -89,7 +91,7 @@ export function ClickPowerUp({
             tap: (c: string) => ({
               x: c.includes("right") ? -2 : 2,
               y: c.includes("bottom") ? -2 : 2,
-              borderColor: "#2CD4BD",
+              borderColor: "#22C55E",
             }),
           }}
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
@@ -112,7 +114,7 @@ export function ClickPowerUp({
           variants={{
             rest: { scaleX: 0, originX: 0, backgroundColor: colors.arm },
             hover: { scaleX: 1, originX: 0, backgroundColor: colors.arm },
-            tap: { scaleX: 1, originX: 0, backgroundColor: "#2CD4BD" },
+            tap: { scaleX: 1, originX: 0, backgroundColor: "#22C55E" },
           }}
           transition={{ type: "spring", stiffness: 220, damping: 22 }}
           className="absolute inset-0 z-10 origin-left"

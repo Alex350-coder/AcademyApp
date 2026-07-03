@@ -15,14 +15,14 @@ const iconMap: Record<string, React.ElementType> = {
 
 function getSemanticColor(value: number, label: string): string | undefined {
   if (label !== 'Avg Score' && label !== 'Attendance Rate') return undefined;
-  if (value >= 80) return '#22c55e';
-  if (value >= 60) return '#eab308';
-  return '#ef4444';
+  if (value >= 80) return 'var(--color-success)';
+  if (value >= 60) return 'var(--color-warning)';
+  return 'var(--color-danger)';
 }
 
 function getTrendClass(trend: number): string {
-  if (trend > 0) return 'text-[#22c55e]';
-  if (trend < 0) return 'text-[#ef4444]';
+  if (trend > 0) return 'text-success';
+  if (trend < 0) return 'text-danger';
   return 'text-muted';
 }
 
@@ -54,7 +54,7 @@ function StatCard({
             </div>
           )}
           {loading ? (
-            <div className="h-8 w-20 bg-[#1e2a3a] rounded animate-pulse mt-1" />
+            <div className="h-8 w-20 bg-surface-hover rounded animate-pulse mt-1" />
           ) : (
             <p
               className="text-2xl font-bold mt-1"
@@ -63,7 +63,7 @@ function StatCard({
               {value}
             </p>
           )}
-          <p className="text-xs text-[#94a3b8] mt-0.5">{label}</p>
+          <p className="text-xs text-muted mt-0.5">{label}</p>
           {!loading && (
             <p className={`text-xs mt-1 font-medium ${getTrendClass(trend)}`}>
               {trend > 0 ? '↑' : trend < 0 ? '↓' : '→'} {Math.abs(trend).toFixed(1)}%

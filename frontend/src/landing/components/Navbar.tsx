@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { navLinks } from '@/landing/data/content';
-import { ThemeToggle } from '@/shared/components/ThemeToggle';
 import { Button } from '@/shared/components/Button';
 
 export function Navbar() {
@@ -56,7 +55,6 @@ export function Navbar() {
                 {link.label}
               </button>
             ))}
-            <ThemeToggle />
             <Button
               variant="secondary"
               size="sm"
@@ -107,9 +105,6 @@ export function Navbar() {
                 {link.label}
               </button>
             ))}
-            <div className="flex items-center justify-between pt-1">
-              <ThemeToggle />
-            </div>
             <Button
               variant="secondary"
               size="sm"

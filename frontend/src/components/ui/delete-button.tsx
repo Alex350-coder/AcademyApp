@@ -53,9 +53,9 @@ export function DeleteButton({
             onClick={() => handleClick(true)}
             whileTap={{ scale: 0.95 }}
             style={{ pointerEvents: isAnimating ? "none" : "auto" }}
-            initial={{ backgroundColor: "#FFEDF1", filter: "blur(1px)", opacity: 1 }}
-            animate={{ backgroundColor: "#FE322A", filter: "blur(0px)", opacity: 1 }}
-            exit={{ backgroundColor: "#FFEDF1", filter: "blur(1px)", opacity: 0 }}
+            initial={{ backgroundColor: "#FEF2F2", filter: "blur(1px)", opacity: 1 }}
+            animate={{ backgroundColor: "#EF4444", filter: "blur(0px)", opacity: 1 }}
+            exit={{ backgroundColor: "#FEF2F2", filter: "blur(1px)", opacity: 0 }}
             className="text-white px-5 py-3 rounded-full flex items-center justify-center overflow-hidden"
             transition={{
               layout: { duration: 0.4, ease: [0.77, 0, 0.175, 1] },
@@ -97,9 +97,9 @@ export function DeleteButton({
             onClick={() => handleClick(false)}
             whileTap={{ scale: 0.95 }}
             style={{ pointerEvents: isAnimating ? "none" : "auto" }}
-            initial={{ backgroundColor: "#FE322A", filter: "blur(1px)", opacity: 0 }}
-            animate={{ backgroundColor: "#FFEDF1", filter: "blur(0px)", opacity: 1 }}
-            exit={{ backgroundColor: "#FE322A", filter: "blur(1px)", opacity: 0 }}
+            initial={{ backgroundColor: "#EF4444", filter: "blur(1px)", opacity: 0 }}
+            animate={{ backgroundColor: "#FEF2F2", filter: "blur(0px)", opacity: 1 }}
+            exit={{ backgroundColor: "#EF4444", filter: "blur(1px)", opacity: 0 }}
             className="px-3 py-3 rounded-full flex items-center gap-2 overflow-hidden"
             transition={{
               layout: { duration: 0.4, ease: [0.77, 0, 0.175, 1] },
@@ -113,14 +113,14 @@ export function DeleteButton({
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.5 }}
               transition={{ duration: 0.2, delay: 0.05 }}
-              className="bg-[#FE322A] p-1.5 rounded-full flex items-center justify-center shrink-0"
+              className="bg-danger p-1.5 rounded-full flex items-center justify-center shrink-0"
             >
               <HugeiconsIcon icon={Undo03Icon} className="h-4 w-4 text-white" />
             </motion.div>
 
             <motion.span
               layoutId="buttonText"
-              className="text-[#FE322A] font-medium flex"
+              className="text-danger font-medium flex"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -145,7 +145,7 @@ export function DeleteButton({
             </motion.span>
 
             <motion.div
-              className="bg-[#FE322A] text-white px-4 py-3 rounded-full text-sm font-semibold flex items-center justify-center relative overflow-hidden shrink-0 min-w-[32px]"
+              className="bg-danger text-white px-4 py-3 rounded-full text-sm font-semibold flex items-center justify-center relative overflow-hidden shrink-0 min-w-[32px]"
               initial={{ opacity: 0, scale: 0.5 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.5 }}

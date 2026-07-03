@@ -5,10 +5,12 @@ import { ErrorState } from '@/shared/components/feedback/ErrorState';
 import { EmptyState } from '@/shared/components/feedback/EmptyState';
 import { useAtRiskStudents } from '../api/useAtRiskStudents';
 
+// Literal hex (not CSS vars): getSeverityBg() below does string-concatenation alpha
+// blending ("${color}1A"), which requires a plain hex string, not var(...).
 function getSeverityColor(avg: number): string {
-  if (avg < 55) return '#ef4444';
-  if (avg <= 60) return '#f97316';
-  return '#eab308';
+  if (avg < 55) return '#EF4444'; // matches --color-danger
+  if (avg <= 60) return '#f97316'; // intermediate severity tier, no matching token
+  return '#F59E0B'; // matches --color-warning
 }
 
 function getInitials(name: string): string {
@@ -38,14 +40,13 @@ export function AtRiskStudentsPanel() {
   }
 
   return (
-    <Card className="flex flex-col h-full border-l-[3px]" style={{ borderLeftColor: '#ef4444' }}>
+    <Card className="flex flex-col h-full border-l-[3px] border-l-danger">
       <CardHeader>
         <CardTitle>At-Risk Students</CardTitle>
         {!isLoading && data && (
-          <span className="inline-flex items-center gap-1.5 text-sm font-medium" style={{ color: '#ef4444' }}>
+          <span className="inline-flex items-center gap-1.5 text-sm font-medium text-danger">
             <motion.span
-              className="inline-block h-2 w-2 rounded-full"
-              style={{ backgroundColor: '#ef4444' }}
+              className="inline-block h-2 w-2 rounded-full bg-danger"
               animate={{ opacity: [1, 0.3, 1] }}
               transition={{ duration: 2, repeat: Infinity }}
             />
@@ -57,7 +58,7 @@ export function AtRiskStudentsPanel() {
         {isLoading ? (
           <div className="space-y-3 animate-pulse flex-1">
             {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="h-16 bg-[#1e2a3a] rounded" />
+              <div key={i} className="h-16 bg-surface-hover rounded" />
             ))}
           </div>
         ) : sorted.length > 0 ? (
@@ -70,8 +71,7 @@ export function AtRiskStudentsPanel() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3, delay: index * 0.05 }}
-                  className="flex items-center gap-3 p-3 rounded-md"
-                  style={{ backgroundColor: '#1a2332' }}
+                  className="flex items-center gap-3 p-3 rounded-md bg-surface-hover"
                 >
                   <div
                     className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-bold"
@@ -80,9 +80,9 @@ export function AtRiskStudentsPanel() {
                     {getInitials(student.studentName)}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-[#f1f5f9] truncate">{student.studentName}</p>
-                    <p className="text-xs text-[#94a3b8] mt-0.5">{student.reason}</p>
-                    <p className="text-xs text-[#94a3b8]">{student.sectionName}</p>
+                    <p className="text-sm font-medium text-text truncate">{student.studentName}</p>
+                    <p className="text-xs text-muted mt-0.5">{student.reason}</p>
+                    <p className="text-xs text-muted">{student.sectionName}</p>
                   </div>
                   <span
                     className="text-xs font-semibold px-2.5 py-1 rounded-full shrink-0"

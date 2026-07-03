@@ -215,7 +215,7 @@ export const EducationOrbitDisplay = memo(function EducationOrbitDisplay({
         <OrbitingCircles
           key={index}
           className={cn(
-            'border-none bg-transparent dark:bg-transparent text-primary dark:text-accent',
+            'border-none bg-transparent text-primary',
             iconConfig.className,
           )}
           duration={iconConfig.duration}

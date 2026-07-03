@@ -36,7 +36,7 @@ export function ManagementDataTable<T extends object>({
             e.stopPropagation();
             actions.onEdit(keyExtractor(item));
           }}
-          className="p-1.5 rounded-md text-[#94a3b8] hover:text-[#3b82f6] hover:bg-[#3b82f6]/10 transition-colors duration-150"
+          className="p-1.5 rounded-md text-muted hover:text-primary hover:bg-primary/10 transition-colors duration-150"
         >
           <Pencil className="h-4 w-4" />
         </button>
@@ -46,7 +46,7 @@ export function ManagementDataTable<T extends object>({
             e.stopPropagation();
             actions.onDeactivate(keyExtractor(item));
           }}
-          className="p-1.5 rounded-md text-[#94a3b8] hover:text-[#ef4444] hover:bg-[#ef4444]/10 transition-colors duration-150"
+          className="p-1.5 rounded-md text-muted hover:text-danger hover:bg-danger/10 transition-colors duration-150"
         >
           <Trash2 className="h-4 w-4" />
         </button>

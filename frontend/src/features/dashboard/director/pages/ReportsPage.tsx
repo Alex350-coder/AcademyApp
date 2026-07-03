@@ -48,8 +48,8 @@ export default function ReportsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-[#f1f5f9]">Reports</h1>
-          <p className="text-[#94a3b8] text-sm mt-1">Detailed institutional reports and analytics</p>
+          <h1 className="text-2xl font-bold text-text">Reports</h1>
+          <p className="text-muted text-sm mt-1">Detailed institutional reports and analytics</p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="secondary" onClick={() => window.print()}>
@@ -68,21 +68,21 @@ export default function ReportsPage() {
         <CardContent>
           <div className="flex items-center gap-4">
             <div>
-              <label className="text-sm font-medium text-[#f1f5f9]">From</label>
+              <label className="text-sm font-medium text-text">From</label>
               <input
                 type="date"
                 value={dateFrom}
                 onChange={(e) => setDateFrom(e.target.value)}
-                className="block mt-1 px-3 py-2 rounded-md bg-[#1e2a3a] text-[#f1f5f9] border border-[#1e3048]"
+                className="block mt-1 px-3 py-2 rounded-md bg-surface-hover text-text border border-border"
               />
             </div>
             <div>
-              <label className="text-sm font-medium text-[#f1f5f9]">To</label>
+              <label className="text-sm font-medium text-text">To</label>
               <input
                 type="date"
                 value={dateTo}
                 onChange={(e) => setDateTo(e.target.value)}
-                className="block mt-1 px-3 py-2 rounded-md bg-[#1e2a3a] text-[#f1f5f9] border border-[#1e3048]"
+                className="block mt-1 px-3 py-2 rounded-md bg-surface-hover text-text border border-border"
               />
             </div>
             <Button variant="primary" className="mt-6" onClick={handleApply}>
@@ -112,25 +112,26 @@ export default function ReportsPage() {
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={gradeDistributionData} margin={{ top: 8, right: 8, bottom: 8, left: -16 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1e3048" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
                   <XAxis
                     dataKey="grade"
-                    tick={{ fontSize: 11, fill: '#94a3b8' }}
-                    axisLine={{ stroke: '#1e3048' }}
+                    tick={{ fontSize: 11, fill: 'var(--color-muted)' }}
+                    axisLine={{ stroke: 'var(--color-border)' }}
                     tickLine={false}
                   />
                   <YAxis
-                    tick={{ fontSize: 11, fill: '#94a3b8' }}
-                    axisLine={{ stroke: '#1e3048' }}
+                    tick={{ fontSize: 11, fill: 'var(--color-muted)' }}
+                    axisLine={{ stroke: 'var(--color-border)' }}
                     tickLine={false}
                   />
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: '#1a2332',
-                      border: '1px solid #1e3048',
+                      backgroundColor: 'var(--color-surface)',
+                      border: '1px solid var(--color-border)',
                       borderRadius: '6px',
-                      color: '#f1f5f9',
+                      color: 'var(--color-text)',
                       fontSize: '12px',
+                      boxShadow: 'var(--shadow-elevation-2)',
                     }}
                     formatter={(value) => [value, 'Students']}
                   />
@@ -142,7 +143,7 @@ export default function ReportsPage() {
                 </BarChart>
               </ResponsiveContainer>
             </div>
-            <p className="text-xs text-[#94a3b8] mt-3 text-center">
+            <p className="text-xs text-muted mt-3 text-center">
               Total students graded: {totalStudents}
             </p>
           </CardContent>

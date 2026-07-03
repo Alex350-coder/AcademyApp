@@ -82,11 +82,11 @@ export function DataTable<T>({
 
   if (loading) {
     return (
-      <div className="bg-[#111827] border border-[#1e3048] rounded-lg p-6">
+      <div className="bg-surface border border-border rounded-lg p-6">
         <div className="space-y-3 animate-pulse">
-          {searchable && <div className="h-9 bg-[#1e2a3a] rounded w-full" />}
+          {searchable && <div className="h-9 bg-surface-hover rounded w-full" />}
           {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="h-8 bg-[#1e2a3a] rounded" />
+            <div key={i} className="h-8 bg-surface-hover rounded" />
           ))}
         </div>
       </div>
@@ -95,23 +95,23 @@ export function DataTable<T>({
 
   if (sorted.length === 0) {
     return (
-      <div className="bg-[#111827] border border-[#1e3048] rounded-lg p-6">
+      <div className="bg-surface border border-border rounded-lg p-6">
         {searchable && (
           <div className="relative mb-4">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#94a3b8]" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(0); }}
               placeholder="Search..."
-              className="w-full pl-10 pr-4 py-2 rounded-md bg-[#1e2a3a] text-[#f1f5f9] border border-[#1e3048] placeholder:text-[#94a3b8] text-sm focus:outline-none focus:border-[#3b82f6]"
+              className="w-full pl-10 pr-4 py-2 rounded-md bg-surface-hover text-text border border-border placeholder:text-muted text-sm focus:outline-none focus:border-primary"
             />
           </div>
         )}
         <EmptyState
           title={emptyTitle ?? (hasSearchFilter ? 'No results found' : emptyMessage)}
           description={emptyDescription ?? (hasSearchFilter ? 'Try a different search term' : '')}
-          icon={hasSearchFilter ? <SearchX className="h-8 w-8 text-[#94a3b8]" /> : undefined}
+          icon={hasSearchFilter ? <SearchX className="h-8 w-8 text-muted" /> : undefined}
           action={
             hasSearchFilter ? (
               <Button variant="secondary" onClick={() => setSearchQuery('')}>
@@ -127,28 +127,28 @@ export function DataTable<T>({
   }
 
   return (
-    <div className="bg-[#111827] border border-[#1e3048] rounded-lg overflow-hidden">
+    <div className="bg-surface border border-border rounded-lg overflow-hidden">
       {searchable && (
         <div className="relative p-4 pb-0">
-          <Search className="absolute left-7 top-1/2 -translate-y-1/2 h-4 w-4 text-[#94a3b8]" />
+          <Search className="absolute left-7 top-1/2 -translate-y-1/2 h-4 w-4 text-muted" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(0); }}
             placeholder="Search..."
-            className="w-full pl-10 pr-4 py-2 rounded-md bg-[#1e2a3a] text-[#f1f5f9] border border-[#1e3048] placeholder:text-[#94a3b8] text-sm focus:outline-none focus:border-[#3b82f6]"
+            className="w-full pl-10 pr-4 py-2 rounded-md bg-surface-hover text-text border border-border placeholder:text-muted text-sm focus:outline-none focus:border-primary"
           />
         </div>
       )}
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-[#1e3048] bg-[#1e2a3a]">
+            <tr className="border-b border-border bg-surface-hover">
               {columns.map((col) => (
                 <th
                   key={col.key}
-                  className={`px-4 py-3 text-left font-medium text-[#94a3b8] ${
-                    col.sortable ? 'cursor-pointer hover:text-[#f1f5f9] select-none' : ''
+                  className={`px-4 py-3 text-left font-medium text-muted ${
+                    col.sortable ? 'cursor-pointer hover:text-text select-none' : ''
                   }`}
                   onClick={() => col.sortable && handleSort(col.key)}
                 >
@@ -166,10 +166,10 @@ export function DataTable<T>({
             {page.map((item) => (
               <tr
                 key={keyExtractor(item)}
-                className="border-b border-[#1e3048] last:border-b-0 hover:bg-[#1a2744] transition-colors duration-150"
+                className="border-b border-border last:border-b-0 hover:bg-surface-hover transition-colors duration-150"
               >
                 {columns.map((col) => (
-                  <td key={col.key} className="px-4 py-3 text-[#f1f5f9]">
+                  <td key={col.key} className="px-4 py-3 text-text">
                     {col.render ? col.render(item) : String(item[col.key as keyof T] ?? '')}
                   </td>
                 ))}
@@ -180,8 +180,8 @@ export function DataTable<T>({
       </div>
 
       {pageCount > 1 && (
-        <div className="flex items-center justify-between px-4 py-3 border-t border-[#1e3048]">
-          <span className="text-sm text-[#94a3b8]">
+        <div className="flex items-center justify-between px-4 py-3 border-t border-border">
+          <span className="text-sm text-muted">
             {currentPage * pageSize + 1}–{Math.min((currentPage + 1) * pageSize, sorted.length)} of {sorted.length}
           </span>
           <div className="flex gap-1">
