@@ -33,3 +33,7 @@ application-local.yml
 
 ### Build ###
 backend/.flattened-pom.xml
+
+### Herramientas locales / notas internas ###
+docs/
+.claude/
