@@ -35,10 +35,10 @@ export default function TeachersManagementPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['teachers'] });
-      addToast('Teacher deactivated successfully', 'success');
+      addToast('Docente desactivado correctamente', 'success');
     },
     onError: () => {
-      addToast('Failed to deactivate teacher', 'error');
+      addToast('Error al desactivar el docente', 'error');
     },
   });
 
@@ -55,12 +55,12 @@ export default function TeachersManagementPage() {
   }, [data, search]);
 
   const columns: Column<Teacher>[] = [
-    { key: 'fullName', header: 'Name', sortable: true },
+    { key: 'fullName', header: 'Nombre', sortable: true },
     { key: 'email', header: 'Email', sortable: true },
-    { key: 'specialty', header: 'Specialty', sortable: true },
+    { key: 'specialty', header: 'Especialidad', sortable: true },
     {
       key: 'status',
-      header: 'Status',
+      header: 'Estado',
       render: (t) => (
         <Badge variant={t.status === 'ACTIVE' ? 'success' : 'danger'}>{t.status}</Badge>
       ),
@@ -68,40 +68,40 @@ export default function TeachersManagementPage() {
   ];
 
   if (isError) {
-    return <ErrorState message="Could not load teachers" onRetry={() => refetch()} />;
+    return <ErrorState message="No se pudieron cargar los docentes" onRetry={() => refetch()} />;
   }
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-text">Teachers Management</h1>
-          <p className="text-muted text-sm mt-1">Manage all teachers in the institution</p>
+          <h1 className="text-2xl font-bold text-text">Gestión de Docentes</h1>
+          <p className="text-muted text-sm mt-1">Gestiona todos los docentes de la institución</p>
         </div>
         <Button onClick={() => { setEditingTeacher(null); setShowForm(true); }}>
-          Add Teacher
+          Agregar Docente
         </Button>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>All Teachers</CardTitle>
+          <CardTitle>Todos los Docentes</CardTitle>
           <div className="flex items-center gap-2">
             <Input
-              placeholder="Search teachers..."
+              placeholder="Buscar docentes..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-64"
             />
-            <span className="text-sm text-muted">{filtered.length} teacher{filtered.length !== 1 ? 's' : ''}</span>
+            <span className="text-sm text-muted">{filtered.length} docente{filtered.length !== 1 ? 's' : ''}</span>
           </div>
         </CardHeader>
         <CardContent>
           {!isLoading && filtered.length === 0 ? (
             <EmptyState
-              title={search ? 'No teachers match your search' : 'No teachers found'}
-              description={search ? 'Try a different search term' : 'Add your first teacher to get started'}
-              action={search ? undefined : { label: 'Add Teacher', onClick: () => { setEditingTeacher(null); setShowForm(true); } }}
+              title={search ? 'Ningún docente coincide con tu búsqueda' : 'No se encontraron docentes'}
+              description={search ? 'Prueba con otro término de búsqueda' : 'Agrega tu primer docente para empezar'}
+              action={search ? undefined : { label: 'Agregar Docente', onClick: () => { setEditingTeacher(null); setShowForm(true); } }}
             />
           ) : (
             <ManagementDataTable<Teacher>
@@ -115,7 +115,7 @@ export default function TeachersManagementPage() {
                   if (teacher) { setEditingTeacher(teacher); setShowForm(true); }
                 },
                 onDeactivate: (id) => {
-                  if (window.confirm('Are you sure you want to deactivate this teacher?')) {
+                  if (window.confirm('¿Estás seguro de que deseas desactivar a este docente?')) {
                     deactivateMutation.mutate(id);
                   }
                 },
@@ -127,7 +127,7 @@ export default function TeachersManagementPage() {
 
       {showForm && (
         <UserFormDialog
-          title={editingTeacher ? 'Edit Teacher' : 'Add Teacher'}
+          title={editingTeacher ? 'Editar Docente' : 'Agregar Docente'}
           initialValues={editingTeacher ? { fullName: editingTeacher.fullName, email: editingTeacher.email, specialty: editingTeacher.specialty } : undefined}
           fields={['fullName', 'email', 'specialty']}
           onClose={() => { setShowForm(false); setEditingTeacher(null); }}
@@ -135,16 +135,16 @@ export default function TeachersManagementPage() {
             try {
               if (editingTeacher) {
                 await httpClient.put(directorEndpoints.teacherById(editingTeacher.id), values);
-                addToast('Teacher updated successfully', 'success');
+                addToast('Docente actualizado correctamente', 'success');
               } else {
                 await httpClient.post(directorEndpoints.teachers, values);
-                addToast('Teacher created successfully', 'success');
+                addToast('Docente creado correctamente', 'success');
               }
               queryClient.invalidateQueries({ queryKey: ['teachers'] });
               setShowForm(false);
               setEditingTeacher(null);
             } catch {
-              addToast('Failed to save teacher', 'error');
+              addToast('Error al guardar el docente', 'error');
             }
           }}
         />

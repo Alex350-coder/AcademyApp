@@ -7,6 +7,21 @@ import { useMySchedule } from '../api/useStudentData';
 import type { ScheduleEntry } from '../api/types';
 
 const DAYS = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'];
+const DAY_LABELS_ES: Record<string, string> = {
+  MONDAY: 'Lunes',
+  TUESDAY: 'Martes',
+  WEDNESDAY: 'Miércoles',
+  THURSDAY: 'Jueves',
+  FRIDAY: 'Viernes',
+};
+const DAY_LABELS_ES_SHORT: Record<string, string> = {
+  MONDAY: 'Lun',
+  TUESDAY: 'Mar',
+  WEDNESDAY: 'Mié',
+  THURSDAY: 'Jue',
+  FRIDAY: 'Vie',
+};
+
 export default function MySchedulePage() {
   const { data, isLoading, isError, refetch } = useMySchedule();
 
@@ -27,15 +42,15 @@ export default function MySchedulePage() {
   }, [scheduled]);
 
   if (isError) {
-    return <ErrorState message="Could not load your schedule" onRetry={() => refetch()} />;
+    return <ErrorState message="No se pudo cargar tu horario" onRetry={() => refetch()} />;
   }
 
   if (isLoading) {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-text">My Schedule</h1>
-          <p className="text-muted text-sm mt-1">Weekly class schedule</p>
+          <h1 className="text-2xl font-bold text-text">Mi Horario</h1>
+          <p className="text-muted text-sm mt-1">Horario semanal de clases</p>
         </div>
         <Card>
           <CardContent>
@@ -54,15 +69,15 @@ export default function MySchedulePage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-text">My Schedule</h1>
-          <p className="text-muted text-sm mt-1">Weekly class schedule</p>
+          <h1 className="text-2xl font-bold text-text">Mi Horario</h1>
+          <p className="text-muted text-sm mt-1">Horario semanal de clases</p>
         </div>
         <EmptyState
-          title="No schedule available"
+          title="Sin horario disponible"
           description={
             !data || data.length === 0
-              ? 'Your schedule is empty. Enroll in courses to see your schedule here.'
-              : "Class times haven't been set up for your courses yet."
+              ? 'Tu horario está vacío. Matricúlate en cursos para ver tu horario aquí.'
+              : 'Aún no se han configurado los horarios de tus cursos.'
           }
         />
       </div>
@@ -72,8 +87,8 @@ export default function MySchedulePage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-text">My Schedule</h1>
-        <p className="text-muted text-sm mt-1">Weekly class schedule</p>
+        <h1 className="text-2xl font-bold text-text">Mi Horario</h1>
+        <p className="text-muted text-sm mt-1">Horario semanal de clases</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
@@ -85,7 +100,7 @@ export default function MySchedulePage() {
             <Card key={day} className="min-h-[200px]">
               <CardContent>
                 <h3 className="text-sm font-semibold text-text mb-3 text-center uppercase tracking-wider">
-                  {day.charAt(0) + day.slice(1).toLowerCase().slice(0, 3)}
+                  {DAY_LABELS_ES_SHORT[day] ?? day}
                 </h3>
                 {dayClasses.length > 0 ? (
                   <div className="space-y-2">
@@ -106,7 +121,7 @@ export default function MySchedulePage() {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-xs text-muted text-center mt-8">No classes</p>
+                  <p className="text-xs text-muted text-center mt-8">Sin clases</p>
                 )}
               </CardContent>
             </Card>
@@ -116,16 +131,16 @@ export default function MySchedulePage() {
 
       <Card>
         <CardContent>
-          <h3 className="text-sm font-semibold text-text mb-2">Detailed Schedule</h3>
+          <h3 className="text-sm font-semibold text-text mb-2">Horario Detallado</h3>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border">
-                  <th className="px-3 py-2 text-left text-muted font-medium">Day</th>
-                  <th className="px-3 py-2 text-left text-muted font-medium">Course</th>
-                  <th className="px-3 py-2 text-left text-muted font-medium">Time</th>
-                  <th className="px-3 py-2 text-left text-muted font-medium">Classroom</th>
-                  <th className="px-3 py-2 text-left text-muted font-medium">Teacher</th>
+                  <th className="px-3 py-2 text-left text-muted font-medium">Día</th>
+                  <th className="px-3 py-2 text-left text-muted font-medium">Curso</th>
+                  <th className="px-3 py-2 text-left text-muted font-medium">Hora</th>
+                  <th className="px-3 py-2 text-left text-muted font-medium">Aula</th>
+                  <th className="px-3 py-2 text-left text-muted font-medium">Docente</th>
                 </tr>
               </thead>
               <tbody>
@@ -141,7 +156,7 @@ export default function MySchedulePage() {
                       className="border-b border-border last:border-b-0 hover:bg-surface-hover transition-colors"
                     >
                       <td className="px-3 py-2 text-text">
-                        {entry.dayOfWeek.charAt(0) + entry.dayOfWeek.slice(1).toLowerCase()}
+                        {DAY_LABELS_ES[entry.dayOfWeek] ?? entry.dayOfWeek}
                       </td>
                       <td className="px-3 py-2">
                         <span className="font-medium text-text">{entry.courseName}</span>

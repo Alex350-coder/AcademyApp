@@ -42,10 +42,10 @@ export function useCreateEvaluation() {
     },
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ['teacher', 'evaluations', variables.sectionId] });
-      addToast('Evaluation created successfully', 'success');
+      addToast('Evaluación creada correctamente', 'success');
     },
     onError: () => {
-      addToast('Failed to create evaluation', 'error');
+      addToast('Error al crear la evaluación', 'error');
     },
   });
 }

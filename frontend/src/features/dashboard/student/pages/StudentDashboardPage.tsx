@@ -14,9 +14,9 @@ export default function StudentDashboardPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-text">
-          Welcome, {profile?.fullName ?? 'Student'}
+          Bienvenido, {profile?.fullName ?? 'Alumno'}
         </h1>
-        <p className="text-muted text-sm mt-1">Track your academic progress and schedule</p>
+        <p className="text-muted text-sm mt-1">Sigue tu progreso académico y tu horario</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -27,7 +27,7 @@ export default function StudentDashboardPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Quick Links</CardTitle>
+          <CardTitle>Enlaces Rápidos</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -37,7 +37,7 @@ export default function StudentDashboardPage() {
               className="flex flex-col items-center justify-center p-4"
             >
               <span className="text-2xl mb-1">📚</span>
-              <span className="text-xs font-medium">My Courses</span>
+              <span className="text-xs font-medium">Mis Cursos</span>
             </Button>
             <Button
               variant="secondary"
@@ -45,7 +45,7 @@ export default function StudentDashboardPage() {
               className="flex flex-col items-center justify-center p-4"
             >
               <span className="text-2xl mb-1">📊</span>
-              <span className="text-xs font-medium">Grades</span>
+              <span className="text-xs font-medium">Notas</span>
             </Button>
             <Button
               variant="secondary"
@@ -53,7 +53,7 @@ export default function StudentDashboardPage() {
               className="flex flex-col items-center justify-center p-4"
             >
               <span className="text-2xl mb-1">✅</span>
-              <span className="text-xs font-medium">Attendance</span>
+              <span className="text-xs font-medium">Asistencia</span>
             </Button>
             <Button
               variant="secondary"
@@ -61,7 +61,7 @@ export default function StudentDashboardPage() {
               className="flex flex-col items-center justify-center p-4"
             >
               <span className="text-2xl mb-1">📅</span>
-              <span className="text-xs font-medium">Schedule</span>
+              <span className="text-xs font-medium">Horario</span>
             </Button>
           </div>
         </CardContent>

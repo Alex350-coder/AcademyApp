@@ -5,19 +5,19 @@ import { DeleteButton } from '@/components/ui/delete-button';
 import { LayoutDashboard, Users, GraduationCap, BookOpen, Building2, BarChart3, LogOut } from 'lucide-react';
 
 const navIcons: Record<string, React.ElementType> = {
-  Dashboard: LayoutDashboard,
-  Reports: BarChart3,
-  Teachers: Users,
-  Students: GraduationCap,
-  Courses: BookOpen,
-  Classrooms: Building2,
-  'My Courses': BookOpen,
-  'My Grades': BarChart3,
-  'My Schedule': LayoutDashboard,
-  'My Attendance': BarChart3,
-  'Grade Mgmt': BarChart3,
-  Enrollments: Users,
-  Attendance: BarChart3,
+  Panel: LayoutDashboard,
+  Reportes: BarChart3,
+  Docentes: Users,
+  Estudiantes: GraduationCap,
+  Cursos: BookOpen,
+  Aulas: Building2,
+  'Mis Cursos': BookOpen,
+  'Mis Notas': BarChart3,
+  'Mi Horario': LayoutDashboard,
+  'Mi Asistencia': BarChart3,
+  'Gestión de Notas': BarChart3,
+  Matrículas: Users,
+  Asistencia: BarChart3,
 };
 
 interface NavItem {
@@ -27,20 +27,20 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { label: 'Reports', path: '/app/director/reports', roles: ['DIRECTOR'] },
-  { label: 'Teachers', path: '/app/director/teachers', roles: ['DIRECTOR'] },
-  { label: 'Students', path: '/app/director/students', roles: ['DIRECTOR'] },
-  { label: 'Courses', path: '/app/director/courses', roles: ['DIRECTOR'] },
-  { label: 'Classrooms', path: '/app/director/classrooms', roles: ['DIRECTOR'] },
-  { label: 'Enrollments', path: '/app/secretary/enrollments', roles: ['SECRETARY'] },
-  { label: 'Attendance', path: '/app/secretary/attendance', roles: ['SECRETARY'] },
-  { label: 'My Courses', path: '/app/teacher/courses', roles: ['TEACHER'] },
-  { label: 'Grade Mgmt', path: '/app/teacher/grades', roles: ['TEACHER'] },
-  { label: 'Attendance', path: '/app/teacher/attendance', roles: ['TEACHER'] },
-  { label: 'My Courses', path: '/app/student/courses', roles: ['STUDENT'] },
-  { label: 'My Grades', path: '/app/student/grades', roles: ['STUDENT'] },
-  { label: 'My Schedule', path: '/app/student/schedule', roles: ['STUDENT'] },
-  { label: 'My Attendance', path: '/app/student/attendance', roles: ['STUDENT'] },
+  { label: 'Reportes', path: '/app/director/reports', roles: ['DIRECTOR'] },
+  { label: 'Docentes', path: '/app/director/teachers', roles: ['DIRECTOR'] },
+  { label: 'Estudiantes', path: '/app/director/students', roles: ['DIRECTOR'] },
+  { label: 'Cursos', path: '/app/director/courses', roles: ['DIRECTOR'] },
+  { label: 'Aulas', path: '/app/director/classrooms', roles: ['DIRECTOR'] },
+  { label: 'Matrículas', path: '/app/secretary/enrollments', roles: ['SECRETARY'] },
+  { label: 'Asistencia', path: '/app/secretary/attendance', roles: ['SECRETARY'] },
+  { label: 'Mis Cursos', path: '/app/teacher/courses', roles: ['TEACHER'] },
+  { label: 'Gestión de Notas', path: '/app/teacher/grades', roles: ['TEACHER'] },
+  { label: 'Asistencia', path: '/app/teacher/attendance', roles: ['TEACHER'] },
+  { label: 'Mis Cursos', path: '/app/student/courses', roles: ['STUDENT'] },
+  { label: 'Mis Notas', path: '/app/student/grades', roles: ['STUDENT'] },
+  { label: 'Mi Horario', path: '/app/student/schedule', roles: ['STUDENT'] },
+  { label: 'Mi Asistencia', path: '/app/student/attendance', roles: ['STUDENT'] },
 ];
 
 interface SidebarProps {
@@ -100,19 +100,19 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
     >
       <div className="flex items-center justify-between p-4 border-b border-white/10">
         {!collapsed && (
-          <span className="font-semibold text-white">Academic SaaS</span>
+          <span className="font-semibold text-white">Academia SaaS</span>
         )}
         <button
           onClick={onToggle}
           className="p-1.5 rounded-md hover:bg-white/10 text-white/60 transition-colors"
-          aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          aria-label={collapsed ? 'Expandir barra lateral' : 'Contraer barra lateral'}
         >
           {collapsed ? '→' : '←'}
         </button>
       </div>
 
       <nav className="p-2 space-y-1">
-        {!userRoles.includes('DIRECTOR') && renderNavLink('Dashboard', dashboardPath)}
+        {!userRoles.includes('DIRECTOR') && renderNavLink('Panel', dashboardPath)}
         {visibleItems.map((item) => renderNavLink(item.label, item.path))}
       </nav>
 
@@ -133,15 +133,15 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
             <button
               onClick={logout}
               className="flex items-center justify-center w-full p-2 rounded-md text-white/60 hover:text-danger hover:bg-danger/10 transition-colors"
-              title="Sign Out"
+              title="Cerrar sesión"
             >
               <LogOut className="h-4 w-4" />
             </button>
           ) : (
             <DeleteButton
               onDelete={logout}
-              deleteText="Sign Out"
-              cancelText="Cancel"
+              deleteText="Cerrar sesión"
+              cancelText="Cancelar"
               countdownSeconds={3}
             />
           )}

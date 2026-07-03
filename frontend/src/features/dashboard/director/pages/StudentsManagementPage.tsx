@@ -35,10 +35,10 @@ export default function StudentsManagementPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['students'] });
-      addToast('Student deactivated successfully', 'success');
+      addToast('Alumno desactivado correctamente', 'success');
     },
     onError: () => {
-      addToast('Failed to deactivate student', 'error');
+      addToast('Error al desactivar el alumno', 'error');
     },
   });
 
@@ -55,13 +55,13 @@ export default function StudentsManagementPage() {
   }, [data, search]);
 
   const columns: Column<Student>[] = [
-    { key: 'enrollmentCode', header: 'Enrollment Code', sortable: true },
-    { key: 'fullName', header: 'Name', sortable: true },
+    { key: 'enrollmentCode', header: 'Código de Matrícula', sortable: true },
+    { key: 'fullName', header: 'Nombre', sortable: true },
     { key: 'email', header: 'Email', sortable: true },
-    { key: 'guardian', header: 'Guardian', sortable: true },
+    { key: 'guardian', header: 'Apoderado', sortable: true },
     {
       key: 'status',
-      header: 'Status',
+      header: 'Estado',
       render: (s) => (
         <Badge variant={s.status === 'ACTIVE' ? 'success' : 'danger'}>{s.status}</Badge>
       ),
@@ -69,40 +69,40 @@ export default function StudentsManagementPage() {
   ];
 
   if (isError) {
-    return <ErrorState message="Could not load students" onRetry={() => refetch()} />;
+    return <ErrorState message="No se pudieron cargar los alumnos" onRetry={() => refetch()} />;
   }
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-text">Students Management</h1>
-          <p className="text-muted text-sm mt-1">Manage all students in the institution</p>
+          <h1 className="text-2xl font-bold text-text">Gestión de Alumnos</h1>
+          <p className="text-muted text-sm mt-1">Gestiona todos los alumnos de la institución</p>
         </div>
         <Button onClick={() => { setEditingStudent(null); setShowForm(true); }}>
-          Add Student
+          Agregar Alumno
         </Button>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>All Students</CardTitle>
+          <CardTitle>Todos los Alumnos</CardTitle>
           <div className="flex items-center gap-2">
             <Input
-              placeholder="Search students..."
+              placeholder="Buscar alumnos..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-64"
             />
-            <span className="text-sm text-muted">{filtered.length} student{filtered.length !== 1 ? 's' : ''}</span>
+            <span className="text-sm text-muted">{filtered.length} alumno{filtered.length !== 1 ? 's' : ''}</span>
           </div>
         </CardHeader>
         <CardContent>
           {!isLoading && filtered.length === 0 ? (
             <EmptyState
-              title={search ? 'No students match your search' : 'No students found'}
-              description={search ? 'Try a different search term' : 'Enroll your first student to get started'}
-              action={search ? undefined : { label: 'Add Student', onClick: () => { setEditingStudent(null); setShowForm(true); } }}
+              title={search ? 'Ningún alumno coincide con tu búsqueda' : 'No se encontraron alumnos'}
+              description={search ? 'Prueba con otro término de búsqueda' : 'Matricula tu primer alumno para empezar'}
+              action={search ? undefined : { label: 'Agregar Alumno', onClick: () => { setEditingStudent(null); setShowForm(true); } }}
             />
           ) : (
             <ManagementDataTable<Student>
@@ -116,7 +116,7 @@ export default function StudentsManagementPage() {
                   if (student) { setEditingStudent(student); setShowForm(true); }
                 },
                 onDeactivate: (id) => {
-                  if (window.confirm('Are you sure you want to deactivate this student?')) {
+                  if (window.confirm('¿Estás seguro de que deseas desactivar a este alumno?')) {
                     deactivateMutation.mutate(id);
                   }
                 },
@@ -128,7 +128,7 @@ export default function StudentsManagementPage() {
 
       {showForm && (
         <UserFormDialog
-          title={editingStudent ? 'Edit Student' : 'Add Student'}
+          title={editingStudent ? 'Editar Alumno' : 'Agregar Alumno'}
           initialValues={editingStudent ? { fullName: editingStudent.fullName, email: editingStudent.email, guardian: editingStudent.guardian } : undefined}
           fields={['fullName', 'email', 'guardian']}
           onClose={() => { setShowForm(false); setEditingStudent(null); }}
@@ -136,16 +136,16 @@ export default function StudentsManagementPage() {
             try {
               if (editingStudent) {
                 await httpClient.put(directorEndpoints.studentById(editingStudent.id), values);
-                addToast('Student updated successfully', 'success');
+                addToast('Alumno actualizado correctamente', 'success');
               } else {
                 await httpClient.post(directorEndpoints.students, values);
-                addToast('Student created successfully', 'success');
+                addToast('Alumno creado correctamente', 'success');
               }
               queryClient.invalidateQueries({ queryKey: ['students'] });
               setShowForm(false);
               setEditingStudent(null);
             } catch {
-              addToast('Failed to save student', 'error');
+              addToast('Error al guardar el alumno', 'error');
             }
           }}
         />

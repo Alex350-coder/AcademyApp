@@ -36,10 +36,10 @@ export function UserFormDialog({
   });
 
   const fieldLabels: Record<keyof UserFormValues, string> = {
-    fullName: 'Full Name',
+    fullName: 'Nombre Completo',
     email: 'Email',
-    specialty: 'Specialty',
-    guardian: 'Guardian',
+    specialty: 'Especialidad',
+    guardian: 'Apoderado',
   };
 
   return (
@@ -55,15 +55,15 @@ export function UserFormDialog({
                 key={field}
                 label={fieldLabels[field]}
                 error={errors[field]?.message}
-                {...register(field, { required: `${fieldLabels[field]} is required` })}
+                {...register(field, { required: `${fieldLabels[field]} es requerido` })}
               />
             ))}
             <div className="flex justify-end gap-3 pt-2">
               <Button variant="secondary" type="button" onClick={onClose}>
-                Cancel
+                Cancelar
               </Button>
               <Button type="submit" loading={loading}>
-                Save
+                Guardar
               </Button>
             </div>
           </form>

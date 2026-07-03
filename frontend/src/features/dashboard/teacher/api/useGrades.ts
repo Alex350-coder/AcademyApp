@@ -18,10 +18,10 @@ export function useRecordGrade() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['teacher', 'grades'] });
-      addToast('Grade saved', 'success');
+      addToast('Nota guardada', 'success');
     },
     onError: () => {
-      addToast('Failed to save grade', 'error');
+      addToast('Error al guardar la nota', 'error');
     },
   });
 }

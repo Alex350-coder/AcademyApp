@@ -10,14 +10,14 @@ export default function MyGradesPage() {
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
 
   if (isError) {
-    return <ErrorState message="Could not load your grades" onRetry={() => refetch()} />;
+    return <ErrorState message="No se pudieron cargar tus notas" onRetry={() => refetch()} />;
   }
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-text">My Grades</h1>
-        <p className="text-muted text-sm mt-1">View your academic performance by course</p>
+        <h1 className="text-2xl font-bold text-text">Mis Notas</h1>
+        <p className="text-muted text-sm mt-1">Consulta tu rendimiento académico por curso</p>
       </div>
 
       {isLoading ? (
@@ -55,12 +55,12 @@ export default function MyGradesPage() {
                             section.average >= 70 ? 'success' : section.average >= 60 ? 'warning' : 'danger'
                           }
                         >
-                          Avg: {section.average.toFixed(1)}%
+                          Prom: {section.average.toFixed(1)}%
                         </Badge>
                         <span className="text-muted text-sm">{isExpanded ? '▲' : '▼'}</span>
                       </div>
                     </div>
-                    <p className="text-sm text-muted mt-1">Teacher: {section.teacherName}</p>
+                    <p className="text-sm text-muted mt-1">Docente: {section.teacherName}</p>
                   </button>
 
                   {isExpanded && section.evaluations.length > 0 && (
@@ -69,10 +69,10 @@ export default function MyGradesPage() {
                         <table className="w-full text-sm">
                           <thead>
                             <tr className="border-b border-border">
-                              <th className="px-3 py-2 text-left text-muted font-medium">Evaluation</th>
-                              <th className="px-3 py-2 text-left text-muted font-medium">Type</th>
-                              <th className="px-3 py-2 text-left text-muted font-medium">Date</th>
-                              <th className="px-3 py-2 text-right text-muted font-medium">Score</th>
+                              <th className="px-3 py-2 text-left text-muted font-medium">Evaluación</th>
+                              <th className="px-3 py-2 text-left text-muted font-medium">Tipo</th>
+                              <th className="px-3 py-2 text-left text-muted font-medium">Fecha</th>
+                              <th className="px-3 py-2 text-right text-muted font-medium">Puntaje</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -105,7 +105,7 @@ export default function MyGradesPage() {
                   )}
 
                   {isExpanded && section.evaluations.length === 0 && (
-                    <p className="text-sm text-muted mt-4">No evaluations recorded yet</p>
+                    <p className="text-sm text-muted mt-4">Aún no hay evaluaciones registradas</p>
                   )}
                 </CardContent>
               </Card>
@@ -114,8 +114,8 @@ export default function MyGradesPage() {
         </div>
       ) : (
         <EmptyState
-          title="No grades available"
-          description="Your grades will appear here once evaluations are recorded"
+          title="Sin notas disponibles"
+          description="Tus notas aparecerán aquí cuando se registren evaluaciones"
         />
       )}
     </div>

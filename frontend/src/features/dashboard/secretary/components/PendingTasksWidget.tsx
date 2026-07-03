@@ -9,13 +9,13 @@ export function PendingTasksWidget() {
   const { data, isLoading, isError, refetch } = usePendingTasks();
 
   if (isError) {
-    return <ErrorState message="Could not load pending tasks" onRetry={() => refetch()} />;
+    return <ErrorState message="No se pudieron cargar las tareas pendientes" onRetry={() => refetch()} />;
   }
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Pending Tasks</CardTitle>
+        <CardTitle>Tareas Pendientes</CardTitle>
       </CardHeader>
       <CardContent>
         {isLoading ? (
@@ -27,15 +27,15 @@ export function PendingTasksWidget() {
           <div className="space-y-4">
             <div className="flex items-center justify-between p-3 rounded-md bg-surface-hover">
               <div>
-                <p className="text-sm font-medium text-text">Pending Enrollments</p>
-                <p className="text-xs text-muted">Awaiting confirmation</p>
+                <p className="text-sm font-medium text-text">Matrículas Pendientes</p>
+                <p className="text-xs text-muted">Esperando confirmación</p>
               </div>
               <span className="text-2xl font-bold text-warning">{data.pendingEnrollments ?? 0}</span>
             </div>
             <div className="flex items-center justify-between p-3 rounded-md bg-surface-hover">
               <div>
-                <p className="text-sm font-medium text-text">Unregistered Attendance</p>
-                <p className="text-xs text-muted">Missing today&apos;s entry</p>
+                <p className="text-sm font-medium text-text">Asistencia sin Registrar</p>
+                <p className="text-xs text-muted">Falta el registro de hoy</p>
               </div>
               <span className="text-2xl font-bold text-danger">{data.unregisteredAttendance ?? 0}</span>
             </div>
@@ -46,7 +46,7 @@ export function PendingTasksWidget() {
                 className="flex-1"
                 onClick={() => navigate('/app/secretary/enrollments')}
               >
-                Go to Enrollments
+                Ir a Matrículas
               </Button>
               <Button
                 variant="secondary"
@@ -54,12 +54,12 @@ export function PendingTasksWidget() {
                 className="flex-1"
                 onClick={() => navigate('/app/secretary/attendance')}
               >
-                Register Attendance
+                Registrar Asistencia
               </Button>
             </div>
           </div>
         ) : (
-          <p className="text-sm text-muted text-center py-4">No pending tasks</p>
+          <p className="text-sm text-muted text-center py-4">Sin tareas pendientes</p>
         )}
       </CardContent>
     </Card>

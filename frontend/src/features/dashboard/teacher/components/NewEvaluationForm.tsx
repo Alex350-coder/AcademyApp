@@ -32,7 +32,7 @@ export function NewEvaluationForm({ sectionId, onCreated, onCancel }: NewEvaluat
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="text-sm font-medium text-text block mb-1">Evaluation Type</label>
+        <label className="text-sm font-medium text-text block mb-1">Tipo de Evaluación</label>
         {typesLoading ? (
           <div className="h-10 bg-surface-hover rounded animate-pulse" />
         ) : (
@@ -41,7 +41,7 @@ export function NewEvaluationForm({ sectionId, onCreated, onCancel }: NewEvaluat
             onChange={(e) => setEvaluationTypeId(e.target.value)}
             className="w-full px-3 py-2 rounded-md bg-surface text-text border border-border focus:outline-none focus:ring-2 focus:ring-[var(--color-border-focus)]"
           >
-            <option value="">Select a type...</option>
+            <option value="">Selecciona un tipo...</option>
             {types?.map((t) => (
               <option key={t.id} value={t.id}>
                 {t.name}
@@ -51,14 +51,14 @@ export function NewEvaluationForm({ sectionId, onCreated, onCancel }: NewEvaluat
         )}
       </div>
       <Input
-        label="Name"
+        label="Nombre"
         value={name}
         onChange={(e) => setName(e.target.value)}
-        placeholder="e.g. Quiz 3"
+        placeholder="ej. Prueba 3"
       />
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="text-sm font-medium text-text block mb-1">Date</label>
+          <label className="text-sm font-medium text-text block mb-1">Fecha</label>
           <input
             type="date"
             value={date}
@@ -67,7 +67,7 @@ export function NewEvaluationForm({ sectionId, onCreated, onCancel }: NewEvaluat
           />
         </div>
         <Input
-          label="Max Score"
+          label="Puntaje Máximo"
           type="number"
           min={1}
           value={maxScore}
@@ -76,10 +76,10 @@ export function NewEvaluationForm({ sectionId, onCreated, onCancel }: NewEvaluat
       </div>
       <div className="flex gap-2">
         <Button type="submit" loading={createEvaluation.isPending}>
-          Create Evaluation
+          Crear Evaluación
         </Button>
         <Button type="button" variant="secondary" onClick={onCancel}>
-          Cancel
+          Cancelar
         </Button>
       </div>
     </form>

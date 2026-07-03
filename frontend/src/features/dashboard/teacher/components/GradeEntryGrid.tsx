@@ -37,7 +37,7 @@ export function GradeEntryGrid({ sectionId, evaluation }: GradeEntryGridProps) {
   }
 
   if (isError) {
-    return <ErrorState message="Could not load section roster" onRetry={() => refetch()} />;
+    return <ErrorState message="No se pudo cargar la lista de la sección" onRetry={() => refetch()} />;
   }
 
   if (isLoading) {
@@ -57,8 +57,8 @@ export function GradeEntryGrid({ sectionId, evaluation }: GradeEntryGridProps) {
   if (roster.length === 0) {
     return (
       <EmptyState
-        title="No students enrolled"
-        description="This section has no enrolled students"
+        title="No hay alumnos matriculados"
+        description="Esta sección no tiene alumnos matriculados"
       />
     );
   }
@@ -67,7 +67,7 @@ export function GradeEntryGrid({ sectionId, evaluation }: GradeEntryGridProps) {
     <Card>
       <CardHeader>
         <CardTitle>
-          {evaluation.name} ({evaluation.evaluationTypeName}) - max {evaluation.maxScore}
+          {evaluation.name} ({evaluation.evaluationTypeName}) - máx {evaluation.maxScore}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -75,8 +75,8 @@ export function GradeEntryGrid({ sectionId, evaluation }: GradeEntryGridProps) {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border">
-                <th className="px-4 py-2 text-left text-muted font-medium">Student</th>
-                <th className="px-4 py-2 text-left text-muted font-medium w-32">Score</th>
+                <th className="px-4 py-2 text-left text-muted font-medium">Alumno</th>
+                <th className="px-4 py-2 text-left text-muted font-medium w-32">Puntaje</th>
                 <th className="px-4 py-2 text-left text-muted font-medium w-24"></th>
               </tr>
             </thead>
@@ -107,7 +107,7 @@ export function GradeEntryGrid({ sectionId, evaluation }: GradeEntryGridProps) {
                       onClick={() => handleSave(enrollment.studentId)}
                       disabled={!scores[enrollment.studentId]}
                     >
-                      {savedStudentIds.has(enrollment.studentId) ? 'Saved ✓' : 'Save'}
+                      {savedStudentIds.has(enrollment.studentId) ? 'Guardado ✓' : 'Guardar'}
                     </Button>
                   </td>
                 </tr>

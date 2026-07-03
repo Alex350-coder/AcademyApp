@@ -8,7 +8,7 @@ export default function TeacherDashboardPage() {
   const { data, isLoading, isError, refetch } = useMySections();
 
   if (isError) {
-    return <ErrorState message="Could not load your dashboard" onRetry={() => refetch()} />;
+    return <ErrorState message="No se pudo cargar tu panel" onRetry={() => refetch()} />;
   }
 
   const totalSections = data?.length ?? 0;
@@ -17,8 +17,8 @@ export default function TeacherDashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-text">Teacher Dashboard</h1>
-        <p className="text-muted text-sm mt-1">Overview of your sections and students</p>
+        <h1 className="text-2xl font-bold text-text">Panel de Docente</h1>
+        <p className="text-muted text-sm mt-1">Resumen de tus secciones y alumnos</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -32,7 +32,7 @@ export default function TeacherDashboardPage() {
                 <p className="text-2xl font-bold text-text">
                   {isLoading ? '—' : totalSections}
                 </p>
-                <p className="text-sm text-muted">Sections</p>
+                <p className="text-sm text-muted">Secciones</p>
               </div>
             </div>
           </CardContent>
@@ -47,7 +47,7 @@ export default function TeacherDashboardPage() {
                 <p className="text-2xl font-bold text-text">
                   {isLoading ? '—' : totalStudents}
                 </p>
-                <p className="text-sm text-muted">Students</p>
+                <p className="text-sm text-muted">Alumnos</p>
               </div>
             </div>
           </CardContent>
@@ -59,13 +59,13 @@ export default function TeacherDashboardPage() {
                 to="/app/teacher/attendance"
                 className="flex items-center gap-2 text-sm text-primary hover:underline"
               >
-                <CalendarCheck className="h-4 w-4" /> Take Attendance
+                <CalendarCheck className="h-4 w-4" /> Tomar Asistencia
               </Link>
               <Link
                 to="/app/teacher/grades"
                 className="flex items-center gap-2 text-sm text-primary hover:underline"
               >
-                <GraduationCap className="h-4 w-4" /> Manage Grades
+                <GraduationCap className="h-4 w-4" /> Gestionar Notas
               </Link>
             </div>
           </CardContent>

@@ -27,11 +27,11 @@ export function ManagementDataTable<T extends object>({
 }: ManagementDataTableProps<T>) {
   const actionColumn: Column<T> = {
     key: 'actions',
-    header: 'Actions',
+    header: 'Acciones',
     render: (item: T) => (
       <div className="flex items-center gap-1">
         <button
-          title="Edit"
+          title="Editar"
           onClick={(e) => {
             e.stopPropagation();
             actions.onEdit(keyExtractor(item));
@@ -41,7 +41,7 @@ export function ManagementDataTable<T extends object>({
           <Pencil className="h-4 w-4" />
         </button>
         <button
-          title="Delete"
+          title="Eliminar"
           onClick={(e) => {
             e.stopPropagation();
             actions.onDeactivate(keyExtractor(item));

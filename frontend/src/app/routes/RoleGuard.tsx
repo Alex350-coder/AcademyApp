@@ -33,9 +33,9 @@ export function RoleGuard({ allowedRoles }: RoleGuardProps) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background">
         <div className="text-center">
-          <h1 className="text-2xl font-semibold text-text">Access Denied</h1>
+          <h1 className="text-2xl font-semibold text-text">Acceso Denegado</h1>
           <p className="text-muted mt-2">
-            You do not have permission to access this area.
+            No tienes permiso para acceder a esta área.
           </p>
         </div>
       </div>

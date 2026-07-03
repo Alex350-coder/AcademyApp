@@ -34,10 +34,10 @@ export function useBulkAttendance() {
       queryClient.invalidateQueries({
         queryKey: ['teacher', 'attendance', variables.sectionId, variables.date],
       });
-      addToast('Attendance saved successfully', 'success');
+      addToast('Asistencia guardada correctamente', 'success');
     },
     onError: () => {
-      addToast('Failed to save attendance', 'error');
+      addToast('Error al guardar la asistencia', 'error');
     },
   });
 }

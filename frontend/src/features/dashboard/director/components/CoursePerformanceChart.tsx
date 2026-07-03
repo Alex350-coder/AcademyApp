@@ -55,13 +55,13 @@ export function CoursePerformanceChart() {
   }, [data, itemsPerPage]);
 
   if (isError) {
-    return <ErrorState message="Could not load course performance" onRetry={() => refetch()} />;
+    return <ErrorState message="No se pudo cargar el rendimiento de cursos" onRetry={() => refetch()} />;
   }
 
   return (
     <Card className="flex flex-col h-full">
       <CardHeader>
-        <CardTitle>Course Performance</CardTitle>
+        <CardTitle>Rendimiento de Cursos</CardTitle>
       </CardHeader>
       <CardContent className="flex-1 flex flex-col">
         {isLoading ? (
@@ -88,7 +88,7 @@ export function CoursePerformanceChart() {
                             {course.courseName}
                           </p>
                           <p className="text-xs text-muted">
-                            {course.courseCode} &middot; {course.enrolledStudents} enrolled &middot; {course.attendanceRate.toFixed(0)}% attendance
+                            {course.courseCode} &middot; {course.enrolledStudents} matriculados &middot; {course.attendanceRate.toFixed(0)}% asistencia
                           </p>
                         </div>
                         <span
@@ -117,7 +117,7 @@ export function CoursePerformanceChart() {
               <div className="flex items-center justify-between pt-3 mt-3 border-t border-border">
                 <span className="text-xs text-muted">
                   {(currentPage - 1) * itemsPerPage + 1}–
-                  {Math.min(currentPage * itemsPerPage, courses.length)} of {courses.length}
+                  {Math.min(currentPage * itemsPerPage, courses.length)} de {courses.length}
                 </span>
                 <div className="flex items-center gap-1">
                   <button
@@ -143,7 +143,7 @@ export function CoursePerformanceChart() {
           </>
         ) : (
           <div className="flex-1 flex items-center justify-center">
-            <EmptyState title="No course data available" description="Course performance data will appear here" />
+            <EmptyState title="Sin datos de cursos disponibles" description="Los datos de rendimiento de cursos aparecerán aquí" />
           </div>
         )}
       </CardContent>

@@ -8,7 +8,7 @@ export default function MyAttendancePage() {
   const { data, isLoading, isError, refetch } = useMyAttendance();
 
   if (isError) {
-    return <ErrorState message="Could not load attendance records" onRetry={() => refetch()} />;
+    return <ErrorState message="No se pudieron cargar los registros de asistencia" onRetry={() => refetch()} />;
   }
 
   const totalPercentage =
@@ -19,8 +19,8 @@ export default function MyAttendancePage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-text">My Attendance</h1>
-        <p className="text-muted text-sm mt-1">Track your attendance records by course</p>
+        <h1 className="text-2xl font-bold text-text">Mi Asistencia</h1>
+        <p className="text-muted text-sm mt-1">Consulta tus registros de asistencia por curso</p>
       </div>
 
       {isLoading ? (
@@ -41,7 +41,7 @@ export default function MyAttendancePage() {
           <Card>
             <CardContent>
               <div className="flex items-center justify-between">
-                <p className="text-sm font-medium text-text">Overall Attendance</p>
+                <p className="text-sm font-medium text-text">Asistencia General</p>
                 <Badge
                   variant={totalPercentage >= 80 ? 'success' : totalPercentage >= 60 ? 'warning' : 'danger'}
                 >
@@ -76,7 +76,7 @@ export default function MyAttendancePage() {
                     </Badge>
                   </div>
                   <p className="text-sm text-muted mt-2">
-                    {section.presentCount} present out of {section.totalCount} classes
+                    {section.presentCount} presentes de {section.totalCount} clases
                   </p>
                   <div className="mt-2 w-full h-2 bg-surface-hover rounded-full overflow-hidden">
                     <div
@@ -97,8 +97,8 @@ export default function MyAttendancePage() {
         </>
       ) : (
         <EmptyState
-          title="No attendance records"
-          description="Your attendance records will appear here once classes begin"
+          title="Sin registros de asistencia"
+          description="Tus registros de asistencia aparecerán aquí cuando comiencen las clases"
         />
       )}
     </div>

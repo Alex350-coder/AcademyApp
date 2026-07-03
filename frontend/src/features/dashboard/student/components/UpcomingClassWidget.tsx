@@ -5,6 +5,15 @@ import { EmptyState } from '@/shared/components/feedback/EmptyState';
 import { useMySchedule } from '../api/useStudentData';
 
 const DAYS = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
+const DAY_LABELS_ES: Record<string, string> = {
+  SUNDAY: 'Domingo',
+  MONDAY: 'Lunes',
+  TUESDAY: 'Martes',
+  WEDNESDAY: 'Miércoles',
+  THURSDAY: 'Jueves',
+  FRIDAY: 'Viernes',
+  SATURDAY: 'Sábado',
+};
 
 export function UpcomingClassWidget() {
   const { data, isLoading, isError, refetch } = useMySchedule();
@@ -37,13 +46,13 @@ export function UpcomingClassWidget() {
   }, [data]);
 
   if (isError) {
-    return <ErrorState message="Could not load schedule" onRetry={() => refetch()} />;
+    return <ErrorState message="No se pudo cargar el horario" onRetry={() => refetch()} />;
   }
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Upcoming Class</CardTitle>
+        <CardTitle>Próxima Clase</CardTitle>
       </CardHeader>
       <CardContent>
         {isLoading ? (
@@ -56,14 +65,14 @@ export function UpcomingClassWidget() {
             <p className="text-lg font-semibold text-text">{nextClass.courseName}</p>
             <p className="text-sm text-muted mt-1">{nextClass.courseCode}</p>
             <p className="text-sm text-muted">
-              {nextClass.dayOfWeek.charAt(0) + nextClass.dayOfWeek.slice(1).toLowerCase()}{' '}
+              {DAY_LABELS_ES[nextClass.dayOfWeek] ?? nextClass.dayOfWeek}{' '}
               {nextClass.startTime} - {nextClass.endTime}
             </p>
             <p className="text-sm text-muted">{nextClass.classroom}</p>
-            <p className="text-xs text-muted mt-2">Teacher: {nextClass.teacherName}</p>
+            <p className="text-xs text-muted mt-2">Docente: {nextClass.teacherName}</p>
           </div>
         ) : (
-          <EmptyState title="No classes scheduled" description="Your schedule is empty" />
+          <EmptyState title="No hay clases programadas" description="Tu horario está vacío" />
         )}
       </CardContent>
     </Card>

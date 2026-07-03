@@ -14,15 +14,15 @@ export function ObservationsPanel() {
   const { data, isLoading, isError, refetch } = useMyObservations();
 
   if (isError) {
-    return <ErrorState message="Could not load observations" onRetry={() => refetch()} />;
+    return <ErrorState message="No se pudieron cargar las notificaciones" onRetry={() => refetch()} />;
   }
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Notifications</CardTitle>
+        <CardTitle>Notificaciones</CardTitle>
         {!isLoading && data && (
-          <span className="text-sm text-muted">{data.length} notification{data.length !== 1 ? 's' : ''}</span>
+          <span className="text-sm text-muted">{data.length} {data.length !== 1 ? 'notificaciones' : 'notificación'}</span>
         )}
       </CardHeader>
       <CardContent>
@@ -52,8 +52,8 @@ export function ObservationsPanel() {
           </div>
         ) : (
           <EmptyState
-            title="No notifications"
-            description="You're all caught up"
+            title="Sin notificaciones"
+            description="Estás al día"
           />
         )}
       </CardContent>

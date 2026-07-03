@@ -48,10 +48,10 @@ export function useCreateEnrollment() {
       queryClient.invalidateQueries({ queryKey: ['enrollments'] });
       queryClient.invalidateQueries({ queryKey: ['sections'] });
       queryClient.invalidateQueries({ queryKey: ['pending-tasks'] });
-      addToast('Enrollment created successfully', 'success');
+      addToast('Matrícula creada correctamente', 'success');
     },
     onError: () => {
-      addToast('Failed to create enrollment', 'error');
+      addToast('Error al crear la matrícula', 'error');
     },
   });
 }

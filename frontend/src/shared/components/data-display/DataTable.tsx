@@ -28,7 +28,7 @@ export function DataTable<T>({
   columns,
   data,
   loading = false,
-  emptyMessage = 'No data found',
+  emptyMessage = 'No se encontraron datos',
   pageSize = 20,
   keyExtractor,
   searchable = false,
@@ -103,19 +103,19 @@ export function DataTable<T>({
               type="text"
               value={searchQuery}
               onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(0); }}
-              placeholder="Search..."
+              placeholder="Buscar..."
               className="w-full pl-10 pr-4 py-2 rounded-md bg-surface-hover text-text border border-border placeholder:text-muted text-sm focus:outline-none focus:border-primary"
             />
           </div>
         )}
         <EmptyState
-          title={emptyTitle ?? (hasSearchFilter ? 'No results found' : emptyMessage)}
-          description={emptyDescription ?? (hasSearchFilter ? 'Try a different search term' : '')}
+          title={emptyTitle ?? (hasSearchFilter ? 'No se encontraron resultados' : emptyMessage)}
+          description={emptyDescription ?? (hasSearchFilter ? 'Prueba con otro término de búsqueda' : '')}
           icon={hasSearchFilter ? <SearchX className="h-8 w-8 text-muted" /> : undefined}
           action={
             hasSearchFilter ? (
               <Button variant="secondary" onClick={() => setSearchQuery('')}>
-                Clear search
+                Limpiar búsqueda
               </Button>
             ) : (
               emptyAction
@@ -135,7 +135,7 @@ export function DataTable<T>({
             type="text"
             value={searchQuery}
             onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(0); }}
-            placeholder="Search..."
+            placeholder="Buscar..."
             className="w-full pl-10 pr-4 py-2 rounded-md bg-surface-hover text-text border border-border placeholder:text-muted text-sm focus:outline-none focus:border-primary"
           />
         </div>
@@ -182,7 +182,7 @@ export function DataTable<T>({
       {pageCount > 1 && (
         <div className="flex items-center justify-between px-4 py-3 border-t border-border">
           <span className="text-sm text-muted">
-            {currentPage * pageSize + 1}–{Math.min((currentPage + 1) * pageSize, sorted.length)} of {sorted.length}
+            {currentPage * pageSize + 1}–{Math.min((currentPage + 1) * pageSize, sorted.length)} de {sorted.length}
           </span>
           <div className="flex gap-1">
             <Button
@@ -191,7 +191,7 @@ export function DataTable<T>({
               onClick={() => setCurrentPage((p) => Math.max(0, p - 1))}
               disabled={currentPage === 0}
             >
-              Prev
+              Anterior
             </Button>
             <Button
               size="sm"
@@ -199,7 +199,7 @@ export function DataTable<T>({
               onClick={() => setCurrentPage((p) => Math.min(pageCount - 1, p + 1))}
               disabled={currentPage >= pageCount - 1}
             >
-              Next
+              Siguiente
             </Button>
           </div>
         </div>

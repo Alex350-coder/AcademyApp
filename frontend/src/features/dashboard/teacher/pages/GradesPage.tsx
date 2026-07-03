@@ -25,7 +25,7 @@ export default function GradesPage() {
   } = useEvaluationsBySection(selectedSectionId);
 
   if (sectionsError) {
-    return <ErrorState message="Could not load your sections" onRetry={() => refetchSections()} />;
+    return <ErrorState message="No se pudieron cargar tus secciones" onRetry={() => refetchSections()} />;
   }
 
   const selectedEvaluation = evaluations?.find((e) => e.id === selectedEvaluationId);
@@ -33,13 +33,13 @@ export default function GradesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-text">Grade Management</h1>
-        <p className="text-muted text-sm mt-1">Create evaluations and record grades for your sections</p>
+        <h1 className="text-2xl font-bold text-text">Gestión de Notas</h1>
+        <p className="text-muted text-sm mt-1">Crea evaluaciones y registra notas para tus secciones</p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Select Section</CardTitle>
+          <CardTitle>Seleccionar Sección</CardTitle>
         </CardHeader>
         <CardContent>
           {sectionsLoading ? (
@@ -54,15 +54,15 @@ export default function GradesPage() {
               }}
               className="w-full max-w-md px-3 py-2 rounded-md bg-surface text-text border border-border focus:outline-none focus:ring-2 focus:ring-[var(--color-border-focus)]"
             >
-              <option value="">Select a section...</option>
+              <option value="">Selecciona una sección...</option>
               {sections.map((section) => (
                 <option key={section.id} value={section.id}>
-                  {section.courseName ?? 'Untitled Course'} - {section.name}
+                  {section.courseName ?? 'Curso sin nombre'} - {section.name}
                 </option>
               ))}
             </select>
           ) : (
-            <p className="text-sm text-muted">No sections assigned</p>
+            <p className="text-sm text-muted">No tienes secciones asignadas</p>
           )}
         </CardContent>
       </Card>
@@ -70,10 +70,10 @@ export default function GradesPage() {
       {selectedSectionId && (
         <Card>
           <CardHeader>
-            <CardTitle>Select Evaluation</CardTitle>
+            <CardTitle>Seleccionar Evaluación</CardTitle>
             {!showNewEvaluationForm && (
               <Button size="sm" variant="secondary" onClick={() => setShowNewEvaluationForm(true)}>
-                + New Evaluation
+                + Nueva Evaluación
               </Button>
             )}
           </CardHeader>
@@ -88,7 +88,7 @@ export default function GradesPage() {
                 onCancel={() => setShowNewEvaluationForm(false)}
               />
             ) : evaluationsError ? (
-              <ErrorState message="Could not load evaluations" onRetry={() => refetchEvaluations()} />
+              <ErrorState message="No se pudieron cargar las evaluaciones" onRetry={() => refetchEvaluations()} />
             ) : evaluationsLoading ? (
               <div className="h-10 bg-surface-hover rounded animate-pulse" />
             ) : evaluations && evaluations.length > 0 ? (
@@ -97,7 +97,7 @@ export default function GradesPage() {
                 onChange={(e) => setSelectedEvaluationId(e.target.value)}
                 className="w-full max-w-md px-3 py-2 rounded-md bg-surface text-text border border-border focus:outline-none focus:ring-2 focus:ring-[var(--color-border-focus)]"
               >
-                <option value="">Select an evaluation...</option>
+                <option value="">Selecciona una evaluación...</option>
                 {evaluations.map((ev) => (
                   <option key={ev.id} value={ev.id}>
                     {ev.name} ({ev.evaluationTypeName})
@@ -106,7 +106,7 @@ export default function GradesPage() {
               </select>
             ) : (
               <p className="text-sm text-muted">
-                No evaluations yet for this section. Create one to start grading.
+                Aún no hay evaluaciones para esta sección. Crea una para empezar a calificar.
               </p>
             )}
           </CardContent>
@@ -117,8 +117,8 @@ export default function GradesPage() {
         <GradeEntryGrid sectionId={selectedSectionId} evaluation={selectedEvaluation} />
       ) : selectedSectionId && !showNewEvaluationForm ? (
         <EmptyState
-          title="Select an evaluation"
-          description="Choose an evaluation above to start entering grades"
+          title="Selecciona una evaluación"
+          description="Elige una evaluación arriba para empezar a registrar notas"
         />
       ) : null}
     </div>

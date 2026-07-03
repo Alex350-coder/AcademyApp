@@ -48,16 +48,16 @@ export default function EnrollmentWizardPage() {
   }
 
   const steps = [
-    { key: 'student', label: 'Student' },
-    { key: 'section', label: 'Section' },
-    { key: 'confirm', label: 'Confirm' },
+    { key: 'student', label: 'Alumno' },
+    { key: 'section', label: 'Sección' },
+    { key: 'confirm', label: 'Confirmar' },
   ];
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-text">Enrollment Wizard</h1>
-        <p className="text-muted text-sm mt-1">Enroll students in academic sections</p>
+        <h1 className="text-2xl font-bold text-text">Asistente de Matrícula</h1>
+        <p className="text-muted text-sm mt-1">Matricula alumnos en secciones académicas</p>
       </div>
 
       <div className="flex items-center gap-2">
@@ -89,21 +89,21 @@ export default function EnrollmentWizardPage() {
       {step === 'student' && (
         <Card>
           <CardHeader>
-            <CardTitle>Select Student</CardTitle>
+            <CardTitle>Seleccionar Alumno</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <StudentSearchAutocomplete onSelect={handleStudentSelect} />
             {selectedStudent && (
               <div className="p-3 rounded-md bg-success-bg border border-success/20">
                 <p className="text-sm font-medium text-success">
-                  Selected: {selectedStudent.fullName}
+                  Seleccionado: {selectedStudent.fullName}
                 </p>
                 <p className="text-xs text-success/80">{selectedStudent.enrollmentCode}</p>
               </div>
             )}
             <div className="flex justify-end">
               <Button onClick={handleNext} disabled={!selectedStudent}>
-                Next
+                Siguiente
               </Button>
             </div>
           </CardContent>
@@ -113,11 +113,11 @@ export default function EnrollmentWizardPage() {
       {step === 'section' && (
         <Card>
           <CardHeader>
-            <CardTitle>Select Section</CardTitle>
+            <CardTitle>Seleccionar Sección</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {sectionsError ? (
-              <ErrorState message="Could not load sections" onRetry={() => refetch()} />
+              <ErrorState message="No se pudieron cargar las secciones" onRetry={() => refetch()} />
             ) : sectionsLoading ? (
               <div className="space-y-3 animate-pulse">
                 {Array.from({ length: 3 }).map((_, i) => (
@@ -161,16 +161,16 @@ export default function EnrollmentWizardPage() {
               </div>
             ) : (
               <EmptyState
-                title="No available sections"
-                description="All sections are currently full"
+                title="No hay secciones disponibles"
+                description="Todas las secciones están llenas actualmente"
               />
             )}
             <div className="flex justify-between">
               <Button variant="secondary" onClick={handleBack}>
-                Back
+                Atrás
               </Button>
               <Button onClick={handleNext} disabled={!selectedSection}>
-                Next
+                Siguiente
               </Button>
             </div>
           </CardContent>
@@ -180,18 +180,18 @@ export default function EnrollmentWizardPage() {
       {step === 'confirm' && (
         <Card>
           <CardHeader>
-            <CardTitle>Confirm Enrollment</CardTitle>
+            <CardTitle>Confirmar Matrícula</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="p-4 rounded-lg bg-surface-hover space-y-3">
               <div>
-                <p className="text-xs text-muted">Student</p>
+                <p className="text-xs text-muted">Alumno</p>
                 <p className="text-sm font-medium text-text">{selectedStudent?.fullName}</p>
                 <p className="text-xs text-muted">{selectedStudent?.enrollmentCode}</p>
               </div>
               <div className="h-px bg-border" />
               <div>
-                <p className="text-xs text-muted">Section</p>
+                <p className="text-xs text-muted">Sección</p>
                 <p className="text-sm font-medium text-text">{selectedSection?.courseName}</p>
                 <p className="text-xs text-muted">
                   {selectedSection?.code} &middot; {selectedSection?.teacherName} &middot; {selectedSection?.schedule}
@@ -200,10 +200,10 @@ export default function EnrollmentWizardPage() {
             </div>
             <div className="flex justify-between">
               <Button variant="secondary" onClick={handleBack}>
-                Back
+                Atrás
               </Button>
               <Button onClick={handleConfirm} loading={createEnrollment.isPending}>
-                Confirm Enrollment
+                Confirmar Matrícula
               </Button>
             </div>
           </CardContent>

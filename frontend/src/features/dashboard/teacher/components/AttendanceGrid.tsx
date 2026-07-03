@@ -9,11 +9,11 @@ import { useEnrollmentsBySection } from '../api/useEnrollments';
 
 type AttendanceStatus = 'PRESENT' | 'ABSENT' | 'LATE' | 'JUSTIFIED';
 
-const statusOptions: { value: AttendanceStatus; label: string; color: 'success' | 'danger' | 'warning' | 'info' }[] = [
-  { value: 'PRESENT', label: 'P', color: 'success' },
-  { value: 'ABSENT', label: 'A', color: 'danger' },
-  { value: 'LATE', label: 'L', color: 'warning' },
-  { value: 'JUSTIFIED', label: 'J', color: 'info' },
+const statusOptions: { value: AttendanceStatus; label: string; displayLabel: string; color: 'success' | 'danger' | 'warning' | 'info' }[] = [
+  { value: 'PRESENT', label: 'P', displayLabel: 'PRESENTE', color: 'success' },
+  { value: 'ABSENT', label: 'A', displayLabel: 'AUSENTE', color: 'danger' },
+  { value: 'LATE', label: 'L', displayLabel: 'TARDANZA', color: 'warning' },
+  { value: 'JUSTIFIED', label: 'J', displayLabel: 'JUSTIFICADO', color: 'info' },
 ];
 
 interface AttendanceGridProps {
@@ -77,8 +77,8 @@ export function AttendanceGrid({ sectionId, date }: AttendanceGridProps) {
   if (!sectionId || !date) {
     return (
       <EmptyState
-        title="Select a section and date"
-        description="Choose a section and date to start recording attendance"
+        title="Selecciona una sección y una fecha"
+        description="Elige una sección y una fecha para comenzar a registrar la asistencia"
       />
     );
   }
@@ -86,7 +86,7 @@ export function AttendanceGrid({ sectionId, date }: AttendanceGridProps) {
   if (isError) {
     return (
       <ErrorState
-        message="Could not load attendance data"
+        message="No se pudieron cargar los datos de asistencia"
         onRetry={() => {
           enrollmentsQuery.refetch();
           attendanceQuery.refetch();
@@ -112,8 +112,8 @@ export function AttendanceGrid({ sectionId, date }: AttendanceGridProps) {
   if (roster.length === 0) {
     return (
       <EmptyState
-        title="No students enrolled"
-        description="This section has no enrolled students"
+        title="No hay alumnos matriculados"
+        description="Esta sección no tiene alumnos matriculados"
       />
     );
   }
@@ -121,12 +121,12 @@ export function AttendanceGrid({ sectionId, date }: AttendanceGridProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Attendance - {date}</CardTitle>
+        <CardTitle>Asistencia - {date}</CardTitle>
         <div className="flex items-center gap-3">
           <div className="flex gap-2 text-xs text-muted">
             {statusOptions.map((opt) => (
               <span key={opt.value} className="flex items-center gap-1">
-                <Badge variant={opt.color}>{opt.label}</Badge> {opt.value}
+                <Badge variant={opt.color}>{opt.label}</Badge> {opt.displayLabel}
               </span>
             ))}
           </div>
@@ -136,7 +136,7 @@ export function AttendanceGrid({ sectionId, date }: AttendanceGridProps) {
             loading={bulkMutation.isPending}
             disabled={Object.keys(edits).length === 0}
           >
-            Save All
+            Guardar Todo
           </Button>
         </div>
       </CardHeader>
@@ -145,7 +145,7 @@ export function AttendanceGrid({ sectionId, date }: AttendanceGridProps) {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border">
-                <th className="px-4 py-2 text-left text-muted font-medium">Student</th>
+                <th className="px-4 py-2 text-left text-muted font-medium">Alumno</th>
                 {statusOptions.map((opt) => (
                   <th key={opt.value} className="px-4 py-2 text-center text-muted font-medium w-20">
                     {opt.label}

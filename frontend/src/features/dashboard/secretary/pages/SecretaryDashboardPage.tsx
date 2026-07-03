@@ -9,8 +9,8 @@ export default function SecretaryDashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-text">Secretary Dashboard</h1>
-        <p className="text-muted text-sm mt-1">Manage enrollments, attendance, and student records</p>
+        <h1 className="text-2xl font-bold text-text">Panel de Secretaría</h1>
+        <p className="text-muted text-sm mt-1">Gestiona matrículas, asistencia y registros de alumnos</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -18,7 +18,7 @@ export default function SecretaryDashboardPage() {
 
         <Card className="md:col-span-2">
           <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
+            <CardTitle>Acciones Rápidas</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -28,8 +28,8 @@ export default function SecretaryDashboardPage() {
                 className="flex flex-col items-center justify-center p-6 text-center"
               >
                 <span className="text-3xl mb-2">📋</span>
-                <span className="text-sm font-medium">Enrollment Wizard</span>
-                <span className="text-xs text-muted mt-1">Enroll students in sections</span>
+                <span className="text-sm font-medium">Asistente de Matrícula</span>
+                <span className="text-xs text-muted mt-1">Matricula alumnos en secciones</span>
               </Button>
               <Button
                 variant="secondary"
@@ -37,8 +37,8 @@ export default function SecretaryDashboardPage() {
                 className="flex flex-col items-center justify-center p-6 text-center"
               >
                 <span className="text-3xl mb-2">✅</span>
-                <span className="text-sm font-medium">Attendance Registry</span>
-                <span className="text-xs text-muted mt-1">Register daily attendance</span>
+                <span className="text-sm font-medium">Registro de Asistencia</span>
+                <span className="text-xs text-muted mt-1">Registra la asistencia diaria</span>
               </Button>
             </div>
           </CardContent>

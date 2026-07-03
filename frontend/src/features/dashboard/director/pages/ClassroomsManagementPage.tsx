@@ -40,10 +40,10 @@ export default function ClassroomsManagementPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['classrooms'] });
-      addToast('Classroom deleted successfully', 'success');
+      addToast('Aula eliminada correctamente', 'success');
     },
     onError: () => {
-      addToast('Failed to delete classroom', 'error');
+      addToast('Error al eliminar el aula', 'error');
     },
   });
 
@@ -60,13 +60,13 @@ export default function ClassroomsManagementPage() {
   }, [data, search]);
 
   const columns: Column<Classroom>[] = [
-    { key: 'code', header: 'Code', sortable: true },
-    { key: 'name', header: 'Name', sortable: true },
-    { key: 'capacity', header: 'Capacity', sortable: true },
-    { key: 'location', header: 'Location', sortable: true },
+    { key: 'code', header: 'Código', sortable: true },
+    { key: 'name', header: 'Nombre', sortable: true },
+    { key: 'capacity', header: 'Capacidad', sortable: true },
+    { key: 'location', header: 'Ubicación', sortable: true },
     {
       key: 'actions',
-      header: 'Actions',
+      header: 'Acciones',
       render: (c) => (
         <div className="flex items-center gap-2">
           <Button
@@ -74,18 +74,18 @@ export default function ClassroomsManagementPage() {
             size="sm"
             onClick={() => { setEditingClassroom(c); setShowForm(true); }}
           >
-            Edit
+            Editar
           </Button>
           <Button
             variant="ghost"
             size="sm"
             onClick={() => {
-              if (window.confirm(`Delete classroom "${c.name}"?`)) {
+              if (window.confirm(`¿Eliminar el aula "${c.name}"?`)) {
                 deleteMutation.mutate(c.id);
               }
             }}
           >
-            Delete
+            Eliminar
           </Button>
         </div>
       ),
@@ -93,40 +93,40 @@ export default function ClassroomsManagementPage() {
   ];
 
   if (isError) {
-    return <ErrorState message="Could not load classrooms" onRetry={() => refetch()} />;
+    return <ErrorState message="No se pudieron cargar las aulas" onRetry={() => refetch()} />;
   }
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-text">Classrooms Management</h1>
-          <p className="text-muted text-sm mt-1">Manage classrooms and their availability</p>
+          <h1 className="text-2xl font-bold text-text">Gestión de Aulas</h1>
+          <p className="text-muted text-sm mt-1">Gestiona las aulas y su disponibilidad</p>
         </div>
         <Button onClick={() => { setEditingClassroom(null); setShowForm(true); }}>
-          Add Classroom
+          Agregar Aula
         </Button>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>All Classrooms</CardTitle>
+          <CardTitle>Todas las Aulas</CardTitle>
           <div className="flex items-center gap-2">
             <Input
-              placeholder="Search classrooms..."
+              placeholder="Buscar aulas..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-64"
             />
-            <span className="text-sm text-muted">{filtered.length} classroom{filtered.length !== 1 ? 's' : ''}</span>
+            <span className="text-sm text-muted">{filtered.length} aula{filtered.length !== 1 ? 's' : ''}</span>
           </div>
         </CardHeader>
         <CardContent>
           {!isLoading && filtered.length === 0 ? (
             <EmptyState
-              title={search ? 'No classrooms match your search' : 'No classrooms found'}
-              description={search ? 'Try a different search term' : 'Add your first classroom to get started'}
-              action={search ? undefined : { label: 'Add Classroom', onClick: () => { setEditingClassroom(null); setShowForm(true); } }}
+              title={search ? 'Ningún aula coincide con tu búsqueda' : 'No se encontraron aulas'}
+              description={search ? 'Prueba con otro término de búsqueda' : 'Agrega tu primera aula para empezar'}
+              action={search ? undefined : { label: 'Agregar Aula', onClick: () => { setEditingClassroom(null); setShowForm(true); } }}
             />
           ) : (
             <DataTable<Classroom>
@@ -178,14 +178,14 @@ function ClassroomFormDialog({
     try {
       if (classroom) {
         await httpClient.put(directorEndpoints.classroomById(classroom.id), values);
-        addToast('Classroom updated successfully', 'success');
+        addToast('Aula actualizada correctamente', 'success');
       } else {
         await httpClient.post(directorEndpoints.classrooms, values);
-        addToast('Classroom created successfully', 'success');
+        addToast('Aula creada correctamente', 'success');
       }
       onSaved();
     } catch {
-      addToast('Failed to save classroom', 'error');
+      addToast('Error al guardar el aula', 'error');
     }
   };
 
@@ -193,41 +193,41 @@ function ClassroomFormDialog({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>{classroom ? 'Edit Classroom' : 'Add Classroom'}</CardTitle>
+          <CardTitle>{classroom ? 'Editar Aula' : 'Agregar Aula'}</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <Input
-              label="Classroom Code"
+              label="Código del Aula"
               error={errors.code?.message}
-              {...register('code', { required: 'Code is required' })}
+              {...register('code', { required: 'El código es requerido' })}
             />
             <Input
-              label="Classroom Name"
+              label="Nombre del Aula"
               error={errors.name?.message}
-              {...register('name', { required: 'Name is required' })}
+              {...register('name', { required: 'El nombre es requerido' })}
             />
             <Input
-              label="Capacity"
+              label="Capacidad"
               type="number"
               error={errors.capacity?.message}
               {...register('capacity', {
-                required: 'Capacity is required',
-                min: { value: 1, message: 'Minimum capacity is 1' },
+                required: 'La capacidad es requerida',
+                min: { value: 1, message: 'La capacidad mínima es 1' },
                 valueAsNumber: true,
               })}
             />
             <Input
-              label="Location"
+              label="Ubicación"
               error={errors.location?.message}
-              {...register('location', { required: 'Location is required' })}
+              {...register('location', { required: 'La ubicación es requerida' })}
             />
             <div className="flex justify-end gap-3 pt-2">
               <Button variant="secondary" type="button" onClick={onClose}>
-                Cancel
+                Cancelar
               </Button>
               <Button type="submit" loading={isSubmitting}>
-                Save
+                Guardar
               </Button>
             </div>
           </form>

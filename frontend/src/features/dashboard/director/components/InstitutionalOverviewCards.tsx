@@ -6,15 +6,15 @@ import { ErrorState } from '@/shared/components/feedback/ErrorState';
 import { Users, GraduationCap, BookOpen, TrendingUp, Calendar } from 'lucide-react';
 
 const iconMap: Record<string, React.ElementType> = {
-  'Total Students': Users,
-  'Total Teachers': GraduationCap,
-  'Active Sections': BookOpen,
-  'Avg Score': TrendingUp,
-  'Attendance Rate': Calendar,
+  'Total de Alumnos': Users,
+  'Total de Docentes': GraduationCap,
+  'Secciones Activas': BookOpen,
+  Promedio: TrendingUp,
+  'Tasa de Asistencia': Calendar,
 };
 
 function getSemanticColor(value: number, label: string): string | undefined {
-  if (label !== 'Avg Score' && label !== 'Attendance Rate') return undefined;
+  if (label !== 'Promedio' && label !== 'Tasa de Asistencia') return undefined;
   if (value >= 80) return 'var(--color-success)';
   if (value >= 60) return 'var(--color-warning)';
   return 'var(--color-danger)';
@@ -94,18 +94,18 @@ export function InstitutionalOverviewCards() {
   }, []);
 
   if (isError) {
-    return <ErrorState message="Could not load institutional overview" onRetry={() => refetch()} />;
+    return <ErrorState message="No se pudo cargar el resumen institucional" onRetry={() => refetch()} />;
   }
 
   const loading = isLoading;
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-      <StatCard label="Total Students" value={data?.totalStudents ?? '-'} trend={Number(trends.totalStudents)} loading={loading} />
-      <StatCard label="Total Teachers" value={data?.totalTeachers ?? '-'} trend={Number(trends.totalTeachers)} loading={loading} />
-      <StatCard label="Active Sections" value={data?.totalActiveSections ?? '-'} trend={Number(trends.totalActiveSections)} loading={loading} />
-      <StatCard label="Avg Score" value={data ? `${data.overallAverageScore.toFixed(1)}%` : '-'} trend={Number(trends.overallAverageScore)} loading={loading} />
-      <StatCard label="Attendance Rate" value={data ? `${data.overallAttendanceRate.toFixed(1)}%` : '-'} trend={Number(trends.overallAttendanceRate)} loading={loading} />
+      <StatCard label="Total de Alumnos" value={data?.totalStudents ?? '-'} trend={Number(trends.totalStudents)} loading={loading} />
+      <StatCard label="Total de Docentes" value={data?.totalTeachers ?? '-'} trend={Number(trends.totalTeachers)} loading={loading} />
+      <StatCard label="Secciones Activas" value={data?.totalActiveSections ?? '-'} trend={Number(trends.totalActiveSections)} loading={loading} />
+      <StatCard label="Promedio" value={data ? `${data.overallAverageScore.toFixed(1)}%` : '-'} trend={Number(trends.overallAverageScore)} loading={loading} />
+      <StatCard label="Tasa de Asistencia" value={data ? `${data.overallAttendanceRate.toFixed(1)}%` : '-'} trend={Number(trends.overallAttendanceRate)} loading={loading} />
     </div>
   );
 }

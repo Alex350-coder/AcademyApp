@@ -12,24 +12,24 @@ export default function AttendanceRegistryPage() {
   const { data: sections, isLoading, isError, refetch } = useSections();
 
   if (isError) {
-    return <ErrorState message="Could not load sections" onRetry={() => refetch()} />;
+    return <ErrorState message="No se pudieron cargar las secciones" onRetry={() => refetch()} />;
   }
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-text">Attendance Registry</h1>
-        <p className="text-muted text-sm mt-1">Register and manage daily attendance by section</p>
+        <h1 className="text-2xl font-bold text-text">Registro de Asistencia</h1>
+        <p className="text-muted text-sm mt-1">Registra y gestiona la asistencia diaria por sección</p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Select Section & Date</CardTitle>
+          <CardTitle>Seleccionar Sección y Fecha</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex items-end gap-4">
             <div className="flex-1">
-              <label className="text-sm font-medium text-text block mb-1">Section</label>
+              <label className="text-sm font-medium text-text block mb-1">Sección</label>
               {isLoading ? (
                 <div className="h-10 bg-surface-hover rounded animate-pulse" />
               ) : sections && sections.length > 0 ? (
@@ -38,7 +38,7 @@ export default function AttendanceRegistryPage() {
                   onChange={(e) => setSelectedSectionId(e.target.value)}
                   className="w-full px-3 py-2 rounded-md bg-surface text-text border border-border focus:outline-none focus:ring-2 focus:ring-[var(--color-border-focus)]"
                 >
-                  <option value="">Select a section...</option>
+                  <option value="">Selecciona una sección...</option>
                   {sections.map((section: Section) => (
                     <option key={section.id} value={section.id}>
                       {section.courseName} - {section.code} ({section.teacherName})
@@ -46,11 +46,11 @@ export default function AttendanceRegistryPage() {
                   ))}
                 </select>
               ) : (
-                <p className="text-sm text-muted">No sections available</p>
+                <p className="text-sm text-muted">No hay secciones disponibles</p>
               )}
             </div>
             <div>
-              <label className="text-sm font-medium text-text block mb-1">Date</label>
+              <label className="text-sm font-medium text-text block mb-1">Fecha</label>
               <input
                 type="date"
                 value={selectedDate}
@@ -66,8 +66,8 @@ export default function AttendanceRegistryPage() {
         <BulkAttendanceGrid sectionId={selectedSectionId} date={selectedDate} />
       ) : (
         <EmptyState
-          title="Select a section"
-          description="Choose a section from the dropdown above to register attendance"
+          title="Selecciona una sección"
+          description="Elige una sección de la lista de arriba para registrar la asistencia"
         />
       )}
     </div>

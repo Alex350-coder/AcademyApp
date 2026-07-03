@@ -48,27 +48,27 @@ export default function ReportsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-text">Reports</h1>
-          <p className="text-muted text-sm mt-1">Detailed institutional reports and analytics</p>
+          <h1 className="text-2xl font-bold text-text">Reportes</h1>
+          <p className="text-muted text-sm mt-1">Reportes detallados y analítica institucional</p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="secondary" onClick={() => window.print()}>
-            Export PDF
+            Exportar PDF
           </Button>
           <Button variant="secondary">
-            Export CSV
+            Exportar CSV
           </Button>
         </div>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Date Range</CardTitle>
+          <CardTitle>Rango de Fechas</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-4">
             <div>
-              <label className="text-sm font-medium text-text">From</label>
+              <label className="text-sm font-medium text-text">Desde</label>
               <input
                 type="date"
                 value={dateFrom}
@@ -77,7 +77,7 @@ export default function ReportsPage() {
               />
             </div>
             <div>
-              <label className="text-sm font-medium text-text">To</label>
+              <label className="text-sm font-medium text-text">Hasta</label>
               <input
                 type="date"
                 value={dateTo}
@@ -86,7 +86,7 @@ export default function ReportsPage() {
               />
             </div>
             <Button variant="primary" className="mt-6" onClick={handleApply}>
-              Apply
+              Aplicar
             </Button>
           </div>
         </CardContent>
@@ -106,7 +106,7 @@ export default function ReportsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
-            <CardTitle>Grade Distribution</CardTitle>
+            <CardTitle>Distribución de Notas</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-64">
@@ -133,7 +133,7 @@ export default function ReportsPage() {
                       fontSize: '12px',
                       boxShadow: 'var(--shadow-elevation-2)',
                     }}
-                    formatter={(value) => [value, 'Students']}
+                    formatter={(value) => [value, 'Alumnos']}
                   />
                   <Bar dataKey="count" radius={[4, 4, 0, 0]}>
                     {gradeDistributionData.map((entry, i) => (
@@ -144,7 +144,7 @@ export default function ReportsPage() {
               </ResponsiveContainer>
             </div>
             <p className="text-xs text-muted mt-3 text-center">
-              Total students graded: {totalStudents}
+              Total de alumnos calificados: {totalStudents}
             </p>
           </CardContent>
         </Card>

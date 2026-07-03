@@ -41,10 +41,10 @@ export default function CoursesManagementPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['courses'] });
-      addToast('Course deleted successfully', 'success');
+      addToast('Curso eliminado correctamente', 'success');
     },
     onError: () => {
-      addToast('Failed to delete course', 'error');
+      addToast('Error al eliminar el curso', 'error');
     },
   });
 
@@ -60,20 +60,20 @@ export default function CoursesManagementPage() {
   }, [data, search]);
 
   const columns: Column<Course>[] = [
-    { key: 'code', header: 'Code', sortable: true },
-    { key: 'name', header: 'Name', sortable: true },
-    { key: 'credits', header: 'Credits', sortable: true },
-    { key: 'sectionsCount', header: 'Sections', sortable: true },
+    { key: 'code', header: 'Código', sortable: true },
+    { key: 'name', header: 'Nombre', sortable: true },
+    { key: 'credits', header: 'Créditos', sortable: true },
+    { key: 'sectionsCount', header: 'Secciones', sortable: true },
     {
       key: 'status',
-      header: 'Status',
+      header: 'Estado',
       render: (c) => (
         <Badge variant={c.status === 'ACTIVE' ? 'success' : 'danger'}>{c.status}</Badge>
       ),
     },
     {
       key: 'actions',
-      header: 'Actions',
+      header: 'Acciones',
       render: (c) => (
         <div className="flex items-center gap-2">
           <Button
@@ -81,18 +81,18 @@ export default function CoursesManagementPage() {
             size="sm"
             onClick={() => { setEditingCourse(c); setShowForm(true); }}
           >
-            Edit
+            Editar
           </Button>
           <Button
             variant="ghost"
             size="sm"
             onClick={() => {
-              if (window.confirm(`Delete course "${c.name}"?`)) {
+              if (window.confirm(`¿Eliminar el curso "${c.name}"?`)) {
                 deleteMutation.mutate(c.id);
               }
             }}
           >
-            Delete
+            Eliminar
           </Button>
         </div>
       ),
@@ -100,40 +100,40 @@ export default function CoursesManagementPage() {
   ];
 
   if (isError) {
-    return <ErrorState message="Could not load courses" onRetry={() => refetch()} />;
+    return <ErrorState message="No se pudieron cargar los cursos" onRetry={() => refetch()} />;
   }
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-text">Courses Management</h1>
-          <p className="text-muted text-sm mt-1">Manage academic courses and their sections</p>
+          <h1 className="text-2xl font-bold text-text">Gestión de Cursos</h1>
+          <p className="text-muted text-sm mt-1">Gestiona los cursos académicos y sus secciones</p>
         </div>
         <Button onClick={() => { setEditingCourse(null); setShowForm(true); }}>
-          Add Course
+          Agregar Curso
         </Button>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>All Courses</CardTitle>
+          <CardTitle>Todos los Cursos</CardTitle>
           <div className="flex items-center gap-2">
             <Input
-              placeholder="Search courses..."
+              placeholder="Buscar cursos..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-64"
             />
-            <span className="text-sm text-muted">{filtered.length} course{filtered.length !== 1 ? 's' : ''}</span>
+            <span className="text-sm text-muted">{filtered.length} curso{filtered.length !== 1 ? 's' : ''}</span>
           </div>
         </CardHeader>
         <CardContent>
           {!isLoading && filtered.length === 0 ? (
             <EmptyState
-              title={search ? 'No courses match your search' : 'No courses found'}
-              description={search ? 'Try a different search term' : 'Create your first course to get started'}
-              action={search ? undefined : { label: 'Add Course', onClick: () => { setEditingCourse(null); setShowForm(true); } }}
+              title={search ? 'Ningún curso coincide con tu búsqueda' : 'No se encontraron cursos'}
+              description={search ? 'Prueba con otro término de búsqueda' : 'Crea tu primer curso para empezar'}
+              action={search ? undefined : { label: 'Agregar Curso', onClick: () => { setEditingCourse(null); setShowForm(true); } }}
             />
           ) : (
             <DataTable<Course>
@@ -185,14 +185,14 @@ function CourseFormDialog({
     try {
       if (course) {
         await httpClient.put(directorEndpoints.courseById(course.id), values);
-        addToast('Course updated successfully', 'success');
+        addToast('Curso actualizado correctamente', 'success');
       } else {
         await httpClient.post(directorEndpoints.courses, values);
-        addToast('Course created successfully', 'success');
+        addToast('Curso creado correctamente', 'success');
       }
       onSaved();
     } catch {
-      addToast('Failed to save course', 'error');
+      addToast('Error al guardar el curso', 'error');
     }
   };
 
@@ -200,41 +200,41 @@ function CourseFormDialog({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>{course ? 'Edit Course' : 'Add Course'}</CardTitle>
+          <CardTitle>{course ? 'Editar Curso' : 'Agregar Curso'}</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <Input
-              label="Course Name"
+              label="Nombre del Curso"
               error={errors.name?.message}
-              {...register('name', { required: 'Course name is required' })}
+              {...register('name', { required: 'El nombre del curso es requerido' })}
             />
             <Input
-              label="Course Code"
+              label="Código del Curso"
               error={errors.code?.message}
-              {...register('code', { required: 'Course code is required' })}
+              {...register('code', { required: 'El código del curso es requerido' })}
             />
             <Input
-              label="Description"
+              label="Descripción"
               error={errors.description?.message}
-              {...register('description', { required: 'Description is required' })}
+              {...register('description', { required: 'La descripción es requerida' })}
             />
             <Input
-              label="Credits"
+              label="Créditos"
               type="number"
               error={errors.credits?.message}
               {...register('credits', {
-                required: 'Credits is required',
-                min: { value: 1, message: 'Minimum 1 credit' },
+                required: 'Los créditos son requeridos',
+                min: { value: 1, message: 'Mínimo 1 crédito' },
                 valueAsNumber: true,
               })}
             />
             <div className="flex justify-end gap-3 pt-2">
               <Button variant="secondary" type="button" onClick={onClose}>
-                Cancel
+                Cancelar
               </Button>
               <Button type="submit" loading={isSubmitting}>
-                Save
+                Guardar
               </Button>
             </div>
           </form>

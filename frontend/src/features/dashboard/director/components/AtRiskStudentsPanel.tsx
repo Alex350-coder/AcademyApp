@@ -36,13 +36,13 @@ export function AtRiskStudentsPanel() {
   }, [data]);
 
   if (isError) {
-    return <ErrorState message="Could not load at-risk students" onRetry={() => refetch()} />;
+    return <ErrorState message="No se pudieron cargar los alumnos en riesgo" onRetry={() => refetch()} />;
   }
 
   return (
     <Card className="flex flex-col h-full border-l-[3px] border-l-danger">
       <CardHeader>
-        <CardTitle>At-Risk Students</CardTitle>
+        <CardTitle>Alumnos en Riesgo</CardTitle>
         {!isLoading && data && (
           <span className="inline-flex items-center gap-1.5 text-sm font-medium text-danger">
             <motion.span
@@ -50,7 +50,7 @@ export function AtRiskStudentsPanel() {
               animate={{ opacity: [1, 0.3, 1] }}
               transition={{ duration: 2, repeat: Infinity }}
             />
-            {data.length} student{data.length !== 1 ? 's' : ''}
+            {data.length} alumno{data.length !== 1 ? 's' : ''}
           </span>
         )}
       </CardHeader>
@@ -100,8 +100,8 @@ export function AtRiskStudentsPanel() {
         ) : (
           <div className="flex-1 flex items-center justify-center">
             <EmptyState
-              title="No at-risk students"
-              description="All students are performing well"
+              title="Sin alumnos en riesgo"
+              description="Todos los alumnos tienen buen rendimiento"
             />
           </div>
         )}

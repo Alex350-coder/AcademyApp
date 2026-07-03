@@ -12,7 +12,7 @@ interface StudentSearchAutocompleteProps {
 
 export function StudentSearchAutocomplete({
   onSelect,
-  placeholder = 'Search students...',
+  placeholder = 'Buscar alumnos...',
 }: StudentSearchAutocompleteProps) {
   const [query, setQuery] = useState('');
   const [debounced, setDebounced] = useState('');

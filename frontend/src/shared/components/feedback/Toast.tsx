@@ -39,7 +39,7 @@ function ToastItem({ toast, onDismiss }: { toast: ToastMessage; onDismiss: () =>
       <button
         onClick={onDismiss}
         className="flex-shrink-0 opacity-60 hover:opacity-100 transition-opacity"
-        aria-label="Dismiss"
+        aria-label="Cerrar"
       >
         ✕
       </button>

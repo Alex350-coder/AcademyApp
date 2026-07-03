@@ -8,14 +8,14 @@ export default function MyCoursesPage() {
   const { data, isLoading, isError, refetch } = useMyCourses();
 
   if (isError) {
-    return <ErrorState message="Could not load your courses" onRetry={() => refetch()} />;
+    return <ErrorState message="No se pudieron cargar tus cursos" onRetry={() => refetch()} />;
   }
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-text">My Courses</h1>
-        <p className="text-muted text-sm mt-1">View your enrolled courses and sections</p>
+        <h1 className="text-2xl font-bold text-text">Mis Cursos</h1>
+        <p className="text-muted text-sm mt-1">Consulta tus cursos y secciones matriculados</p>
       </div>
 
       {isLoading ? (
@@ -47,12 +47,12 @@ export default function MyCoursesPage() {
                 </div>
                 <div className="mt-3 text-sm text-muted">
                   <p className="flex items-center gap-2">
-                    <span>Teacher:</span>
+                    <span>Docente:</span>
                     <span className="text-text">{course.teacherName}</span>
                   </p>
                   {course.evaluations.length > 0 && (
                     <p className="flex items-center gap-2 mt-1">
-                      <span>Evaluations:</span>
+                      <span>Evaluaciones:</span>
                       <span className="text-text">{course.evaluations.length}</span>
                     </p>
                   )}
@@ -63,9 +63,9 @@ export default function MyCoursesPage() {
         </div>
       ) : (
         <EmptyState
-          title="No courses enrolled"
-          description="You are not currently enrolled in any courses"
-          action={{ label: 'View Schedule', onClick: () => window.location.href = '/student/schedule' }}
+          title="Sin cursos matriculados"
+          description="Actualmente no estás matriculado en ningún curso"
+          action={{ label: 'Ver Horario', onClick: () => window.location.href = '/student/schedule' }}
         />
       )}
     </div>

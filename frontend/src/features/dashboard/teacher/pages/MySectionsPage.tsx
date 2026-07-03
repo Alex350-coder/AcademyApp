@@ -9,14 +9,14 @@ export default function MySectionsPage() {
   const { data, isLoading, isError, refetch } = useMySections();
 
   if (isError) {
-    return <ErrorState message="Could not load your sections" onRetry={() => refetch()} />;
+    return <ErrorState message="No se pudieron cargar tus secciones" onRetry={() => refetch()} />;
   }
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-text">My Courses</h1>
-        <p className="text-muted text-sm mt-1">Sections you are currently teaching</p>
+        <h1 className="text-2xl font-bold text-text">Mis Cursos</h1>
+        <p className="text-muted text-sm mt-1">Secciones que estás enseñando actualmente</p>
       </div>
 
       {isLoading ? (
@@ -40,7 +40,7 @@ export default function MySectionsPage() {
                 <div className="flex items-start justify-between">
                   <div>
                     <h3 className="text-lg font-semibold text-text">
-                      {section.courseName ?? 'Untitled Course'}
+                      {section.courseName ?? 'Curso sin nombre'}
                     </h3>
                     <p className="text-sm text-muted">{section.name}</p>
                   </div>
@@ -53,14 +53,14 @@ export default function MySectionsPage() {
                     to={`/app/teacher/attendance?sectionId=${section.id}`}
                     className="text-sm text-primary hover:underline"
                   >
-                    Take Attendance
+                    Tomar Asistencia
                   </Link>
                   <span className="text-muted">·</span>
                   <Link
                     to={`/app/teacher/grades?sectionId=${section.id}`}
                     className="text-sm text-primary hover:underline"
                   >
-                    Manage Grades
+                    Gestionar Notas
                   </Link>
                 </div>
               </CardContent>
@@ -69,8 +69,8 @@ export default function MySectionsPage() {
         </div>
       ) : (
         <EmptyState
-          title="No sections assigned"
-          description="You are not currently assigned to teach any sections"
+          title="Sin secciones asignadas"
+          description="Actualmente no tienes secciones asignadas para enseñar"
         />
       )}
     </div>

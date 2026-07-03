@@ -16,8 +16,8 @@ interface DeleteButtonProps {
 
 export function DeleteButton({
   onDelete,
-  deleteText = "Delete Account",
-  cancelText = "Cancel Deletion",
+  deleteText = "Eliminar cuenta",
+  cancelText = "Cancelar eliminación",
   countdownSeconds = 10,
   className,
 }: DeleteButtonProps) {

@@ -17,13 +17,13 @@ export function AttendanceTrendChart() {
   }, [data]);
 
   if (isError) {
-    return <ErrorState message="Could not load attendance trend" onRetry={() => refetch()} />;
+    return <ErrorState message="No se pudo cargar la tendencia de asistencia" onRetry={() => refetch()} />;
   }
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Attendance Trend</CardTitle>
+        <CardTitle>Tendencia de Asistencia</CardTitle>
       </CardHeader>
       <CardContent>
         {isLoading ? (
@@ -56,7 +56,7 @@ export function AttendanceTrendChart() {
                     fontSize: '12px',
                     boxShadow: 'var(--shadow-elevation-2)',
                   }}
-                  formatter={(value) => [`${Number(value).toFixed(1)}%`, 'Attendance']}
+                  formatter={(value) => [`${Number(value).toFixed(1)}%`, 'Asistencia']}
                 />
                 <Line
                   type="monotone"
@@ -70,7 +70,7 @@ export function AttendanceTrendChart() {
             </ResponsiveContainer>
           </div>
         ) : (
-          <EmptyState title="No attendance data" description="Attendance trend will appear here" />
+          <EmptyState title="Sin datos de asistencia" description="La tendencia de asistencia aparecerá aquí" />
         )}
       </CardContent>
     </Card>
